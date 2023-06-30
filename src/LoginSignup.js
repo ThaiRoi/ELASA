@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -11,42 +11,60 @@ import {
   Keyboard
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
+const ContentLogin = (props) => {
+  const [account, setAccount] = useState('dsfdsf');
+  const [password, setPassword] = useState('');
+  const [repassword, setRepassword] = useState('');
+  const singin = () => {
+    console.log({account, password})
+    console.log({account, password})
+  }
+  return <View>
+  <Text style={[styles.text, { marginTop: 20 }]}>Account:</Text>
+  <TextInput
+    style={styles.inputBox}
+    value = {account}
+    onChangeText={(value => {
+      console.log(value)
+      setAccount(value)
+    })}
+  />
+  <Text style={styles.text}>Password:</Text>
+  <TextInput
+    style={styles.inputBox}
+    secureTextEntry={true}
+    defaultValue={password}
+    keyboardType='default'
+    onChangeText={value => {setPassword(value)}}
+
+  />
+  <Text style={[styles.smallText, { paddingLeft: 20, paddingTop: 5 }]}>Forgot password?</Text>
+  <View style={[styles.button, { alignContent: 'center', justifyContent: 'center', overflow: 'hidden' }]}>
+    <Pressable
+      android_ripple={{
+        color: 'white'
+      }}
+      style={{ width: '100%', borderRadius: 15 }}
+      onPress={singin}
+    >
+      <Text style={[styles.text, { textAlign: 'center' }]}>Login</Text>
+    </Pressable>
+
+  </View>
+
+  <Text style={[styles.smallText, { alignSelf: 'center', marginBottom: 20 }]}>or Login with</Text>
+  <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
+    <Image style={{ height: 50, width: 52 }} source={require('../assets/icons/_Facebook.png')} />
+    <Image style={{ height: 50, width: 50 }} source={require('../assets/icons/_Google.png')} />
+    <Image style={{ height: 50, width: 50 }} source={require('../assets/icons/_Twitter.png')} />
+  </View>
+</View>
+}
 
 function LoginSignup({navigation}) {
-  const contentLogin = (
-    <View>
-      <Text style={[styles.text, { marginTop: 20 }]}>Account:</Text>
-      <TextInput
-        style={styles.inputBox}
-      />
-      <Text style={styles.text}>Password:</Text>
-      <TextInput
-        style={styles.inputBox}
-        secureTextEntry={true}
-        keyboardType='default'
-      />
-      <Text style={[styles.smallText, { paddingLeft: 20, paddingTop: 5 }]}>Forgot password?</Text>
-      <View style={[styles.button, { alignContent: 'center', justifyContent: 'center', overflow: 'hidden' }]}>
-        <Pressable
-          android_ripple={{
-            color: 'white'
-          }}
-          style={{ width: '100%', borderRadius: 15 }}
-          onPress={() => {navigation.navigate('Info')}}
-        >
-          <Text style={[styles.text, { textAlign: 'center' }]}>Login</Text>
-        </Pressable>
 
-      </View>
-
-      <Text style={[styles.smallText, { alignSelf: 'center', marginBottom: 20 }]}>or Login with</Text>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
-        <Image style={{ height: 50, width: 52 }} source={require('../assets/icons/_Facebook.png')} />
-        <Image style={{ height: 50, width: 50 }} source={require('../assets/icons/_Google.png')} />
-        <Image style={{ height: 50, width: 50 }} source={require('../assets/icons/_Twitter.png')} />
-      </View>
-    </View>
-  );
+  
+  
   const contentSignup = (
     <View>
       <Text style={[styles.text, { marginTop: 20 }]}>Account:</Text>
@@ -92,16 +110,16 @@ function LoginSignup({navigation}) {
 
   const [styleTitle1, setStyleTitle1] = useState(activeTitle);
   const [styleTitle2, setStyleTitle2] = useState(inactiveTitle);
-  const [content, setContent] = useState(contentLogin);
+  const [content, setContent] = useState(0);
 
   const handleButton1Press = () => {
-    setContent(contentLogin);
+    setContent(0);
     setStyleTitle1(activeTitle);
     setStyleTitle2(inactiveTitle);
   };
 
   const handleButton2Press = () => {
-    setContent(contentSignup);
+    setContent(1);
     setStyleTitle2(activeTitle);
     setStyleTitle1(inactiveTitle);
   };
@@ -149,9 +167,16 @@ function LoginSignup({navigation}) {
 
 
           </View>
-          <View style ={{}}>
-            {content}
+          
+          <View style ={{display: content ? 'block' : 'none'}}>
+          <ContentLogin/>
           </View>
+          
+          <View style ={{display: !content ? 'block' : 'none'}}>
+          <ContentLogin/>
+          </View>
+          
+          
 
         </Animatable.View>
 
