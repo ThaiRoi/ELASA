@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import LoginSignup from './LoginSignup';
 import Info from './Info';
+import LottieSplashScreen from 'react-native-lottie-splash-screen';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -14,7 +15,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 const Stack = createNativeStackNavigator();
 
 function App({navigation}) {
-
+  useEffect(() => {
+    LottieSplashScreen.hide(); // here
+  }, []);
   return (
     <NavigationContainer>
       <Stack.Navigator 
