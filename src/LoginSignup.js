@@ -11,182 +11,205 @@ import {
   Keyboard
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
+
+const signupAPI = '';
+const loginAPI = '';
+
 const ContentLogin = (props) => {
-  const [account, setAccount] = useState('dsfdsf');
+  const [account, setAccount] = useState('');
   const [password, setPassword] = useState('');
-  const [repassword, setRepassword] = useState('');
-  const singin = () => {
-    console.log({account, password})
-    console.log({account, password})
-  }
   return <View>
-  <Text style={[styles.text, { marginTop: 20 }]}>Account:</Text>
-  <TextInput
-    style={styles.inputBox}
-    value = {account}
-    onChangeText={(value => {
-      console.log(value)
-      setAccount(value)
-    })}
-  />
-  <Text style={styles.text}>Password:</Text>
-  <TextInput
-    style={styles.inputBox}
-    secureTextEntry={true}
-    defaultValue={password}
-    keyboardType='default'
-    onChangeText={value => {setPassword(value)}}
+    <Text style={[styles.text, { marginTop: 20 }]}>Account:</Text>
+    <TextInput
+      style={styles.inputBox}
+      value={account}
+      onChangeText={(value => {
+        setAccount(value)
+      })}
+    />
+    <Text style={styles.text}>Password:</Text>
+    <TextInput
+      style={styles.inputBox}
+      secureTextEntry={true}
+      defaultValue={password}
+      keyboardType='default'
+      onChangeText={value => { setPassword(value) }}
 
-  />
-  <Text style={[styles.smallText, { paddingLeft: 20, paddingTop: 5 }]}>Forgot password?</Text>
-  <View style={[styles.button, { alignContent: 'center', justifyContent: 'center', overflow: 'hidden' }]}>
-    <Pressable
-      android_ripple={{
-        color: 'white'
-      }}
-      style={{ width: '100%', borderRadius: 15 }}
-      onPress={singin}
-    >
-      <Text style={[styles.text, { textAlign: 'center' }]}>Login</Text>
-    </Pressable>
+    />
+    <Text style={[styles.smallText, { paddingLeft: 20, paddingTop: 5 }]}>Forgot password?</Text>
+    <View style={[styles.button, { alignContent: 'center', justifyContent: 'center', overflow: 'hidden' }]}>
+      <Pressable
+        android_ripple={{
+          color: 'white'
+        }}
+        style={{ width: '100%', borderRadius: 15 }}
+        onPress={() => {
+          {
+            console.log('this is from signin page: ', account, password);
 
+          }
+        }}
+      >
+        <Text style={[styles.text, { textAlign: 'center' }]}>Login</Text>
+      </Pressable>
+
+    </View>
+
+    <Text style={[styles.smallText, { alignSelf: 'center', marginBottom: 20 }]}>or Login with</Text>
+    <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
+      <Image style={{ height: 50, width: 52 }} source={require('../assets/icons/_Facebook.png')} />
+      <Image style={{ height: 50, width: 50 }} source={require('../assets/icons/_Google.png')} />
+      <Image style={{ height: 50, width: 50 }} source={require('../assets/icons/_Twitter.png')} />
+    </View>
   </View>
-
-  <Text style={[styles.smallText, { alignSelf: 'center', marginBottom: 20 }]}>or Login with</Text>
-  <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
-    <Image style={{ height: 50, width: 52 }} source={require('../assets/icons/_Facebook.png')} />
-    <Image style={{ height: 50, width: 50 }} source={require('../assets/icons/_Google.png')} />
-    <Image style={{ height: 50, width: 50 }} source={require('../assets/icons/_Twitter.png')} />
-  </View>
-</View>
 }
 
-function LoginSignup({navigation}) {
+const ContentSignup = () => {
+  const [account, setAccount] = useState('');
+  const [password, setPassword] = useState('');
+  const [rePassword, setRePassword] = useState('');
+  return <View>
+    <Text style={[styles.text, { marginTop: 20 }]}>Account:</Text>
+    <TextInput
+      style={styles.inputBox}
+      onChangeText={v => setAccount(v)}
+    />
+    <Text style={styles.text} >Password:</Text>
+    <TextInput
+      style={styles.inputBox}
+      secureTextEntry={true}
+      keyboardType='default'
+      onChangeText={v => setPassword(v)}
+    />
+    <Text style={styles.text}>Confirm password:</Text>
+    <TextInput
+      style={styles.inputBox}
+      secureTextEntry={true}
+      keyboardType='default'
+      onChangeText={v => setRePassword(v)}
 
-  
-  
-  const contentSignup = (
-    <View>
-      <Text style={[styles.text, { marginTop: 20 }]}>Account:</Text>
-      <TextInput
-        style={styles.inputBox}
-      />
-      <Text style={styles.text} >Password:</Text>
-      <TextInput
-        style={styles.inputBox}
-        secureTextEntry={true}
-        keyboardType='default'
-      />
-      <Text style={styles.text}>Confirm password:</Text>
-      <TextInput
-        style={styles.inputBox}
-        secureTextEntry={true}
-        keyboardType='default'
-      />
-      <View style={[styles.button, { alignContent: 'center', justifyContent: 'center', overflow: 'hidden', marginTop: 45 }]}>
-        <Pressable
-          android_ripple={{
-            color: 'white'
-          }}
-          style={{ width: '100%', borderRadius: 15 }}
-          onPress={() => {navigation.navigate('Info')}}
-        >
-          <Text style={[styles.text, { textAlign: 'center', }]}>Sign up</Text>
-        </Pressable>
+    />
+    <View style={[styles.button, { alignContent: 'center', justifyContent: 'center', overflow: 'hidden', marginTop: 45 }]}>
+      <Pressable
+        android_ripple={{
+          color: 'white'
+        }}
+        style={{ width: '100%', borderRadius: 15 }}
+        onPress={() => { SignUpHandler(account, password, rePassword) }}
+      >
+        <Text style={[styles.text, { textAlign: 'center', }]}>Sign up</Text>
+      </Pressable>
 
-      </View>
     </View>
-  );
-  const activeTitle = ({
-    fontSize: 25,
-    color: '#F1E4CA',
-    borderBottomWidth: 2,
-    borderColor: '#F1E4CA',
-    padding: 10,
+  </View>
+
+}
+
+function SignUpHandler(account, password, rePassword) {
+  var myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+
+  var raw = JSON.stringify({
+    "account": account,
+    "password": password
   });
-  const inactiveTitle = ({
-    fontSize: 20,
-  })
 
-  const [styleTitle1, setStyleTitle1] = useState(activeTitle);
-  const [styleTitle2, setStyleTitle2] = useState(inactiveTitle);
-  const [content, setContent] = useState(0);
-
-  const handleButton1Press = () => {
-    setContent(0);
-    setStyleTitle1(activeTitle);
-    setStyleTitle2(inactiveTitle);
+  var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
   };
 
-  const handleButton2Press = () => {
-    setContent(1);
-    setStyleTitle2(activeTitle);
-    setStyleTitle1(inactiveTitle);
+  fetch("http://192.168.10.78:9000/create-user", requestOptions)
+    .then(response => response.text())
+    .then(result => console.log(result))
+    .catch(error => console.log('error', error));
+}
+
+function LoginSignup({ navigation }) {
+
+  const [active, setActive] = useState(1);
+
+  const handleLoginPress = () => {
+    setActive(1);
+  };
+
+  const handleSignupPress = () => {
+    setActive(0);
   };
 
   return (
-<ScrollView style = {{backgroundColor: '#5BB467'}}>
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={{ backgroundColor: '#153C43', alignItems: 'center', flex: 1, flexDirection: 'column' }}>
-        <View
-          animation="faceIn" iterationCount={1} direction="normal"
-          style={{ backgroundColor: '#153C43', alignItems: 'center', justifyContent: 'center' }}>
-          <Text style={[styles.textTitle, { paddingTop: 20 }]}>Welcome to</Text>
-          <Text style={styles.title}>ELASA</Text>
-          <Text style={styles.textTitle}>English Language Acquisition Support App</Text>
-          <Text style={[styles.textTitle, { fontSize: 10, paddingTop: 20, paddingBottom: 20 }]}>Cringe</Text>
+    <ScrollView style={{ backgroundColor: '#5BB467' }}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={{ backgroundColor: '#153C43', alignItems: 'center', flex: 1, flexDirection: 'column' }}>
+          <View
+            style={{ backgroundColor: '#153C43', alignItems: 'center', justifyContent: 'center' }}>
+            <Text style={[styles.textTitle, { paddingTop: 20 }]}>Welcome to</Text>
+            <Text style={styles.title}>ELASA</Text>
+            <Text style={styles.textTitle}>English Language Acquisition Support App</Text>
+            <Text style={[styles.textTitle, { fontSize: 10, paddingTop: 20, paddingBottom: 20 }]}>Cringe</Text>
+          </View>
+
+
+
+          <Animatable.View
+            animation="slideInUp" iterationCount={1} direction="normal" easing={'ease-in-out-back'}
+            style={{ backgroundColor: '#5BB467', width: '100%', height: '100%', borderTopStartRadius: 30, borderTopEndRadius: 30, }}
+          >
+            <View style={{ flexDirection: 'row', height: 70, alignItems: 'center', }}>
+
+              <Pressable
+                onPress={handleLoginPress}
+                hitSlop={{
+                  bottom: 20,
+                  top: 20,
+                }}
+                style={{ flex: 1, }}>
+                <Text style={[styles.textLogin, (active ? styles.activeTitle : styles.inactiveTitle)]}>Login</Text>
+              </Pressable>
+
+              <Pressable
+                onPress={handleSignupPress}
+                hitSlop={{
+                  bottom: 20,
+                  top: 20,
+                }}
+                style={{ flex: 1, }}>
+                <Text style={[styles.textLogin, (!active ? styles.activeTitle : styles.inactiveTitle)]}>Sign up</Text>
+              </Pressable>
+
+
+            </View>
+
+            <View style={{ display: (active ? 'block' : 'none') }}>
+              <ContentLogin />
+            </View>
+
+            <View style={{ display: !active ? 'block' : 'none' }}>
+              <ContentSignup />
+            </View>
+
+
+          </Animatable.View>
+
         </View>
-
-
-
-        <Animatable.View
-          animation="slideInUp" iterationCount={1} direction="normal" easing={'ease-in-out-back'}
-          style={{ backgroundColor: '#5BB467', width: '100%', height: '100%', borderTopStartRadius: 30, borderTopEndRadius: 30, }}
-        >
-          <View style={{ flexDirection: 'row', height: 70, alignItems: 'center', }}>
-
-            <Pressable
-              onPress={handleButton1Press}
-              hitSlop={{
-                bottom: 20,
-                top: 20,
-              }}
-              style={{ flex: 1, }}>
-              <Text style={[styles.textLogin, styleTitle1,]}>Login</Text>
-            </Pressable>
-
-            <Pressable
-              onPress={handleButton2Press}
-              hitSlop={{
-                bottom: 20,
-                top: 20,
-              }}
-              style={{ flex: 1, }}>
-              <Text style={[styles.textLogin, styleTitle2]}>Sign up</Text>
-            </Pressable>
-
-
-          </View>
-          
-          <View style ={{display: content ? 'block' : 'none'}}>
-          <ContentLogin/>
-          </View>
-          
-          <View style ={{display: !content ? 'block' : 'none'}}>
-          <ContentLogin/>
-          </View>
-          
-          
-
-        </Animatable.View>
-
-      </View>
-    </TouchableWithoutFeedback >
+      </TouchableWithoutFeedback >
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  activeTitle: ({
+    fontSize: 25,
+    color: '#F1E4CA',
+    borderBottomWidth: 2,
+    borderColor: '#F1E4CA',
+    padding: 10,
+  }),
+  inactiveTitle: {
+    fontSize: 20,
+  },
   textTitle: {
     fontSize: 18,
     color: '#F1E4CA',
