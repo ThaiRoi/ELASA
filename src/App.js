@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { store } from './store/store';
+import { Provider } from 'react-redux';
 import {
-  ScrollView,
   StyleSheet,
-  Text,
-  View,
 } from 'react-native';
-import LoginSignup from './LoginSignup';
-import Info from './Info';
+import LoginSignup from './screens/LoginSignup';
+import Info from './screens/Info';
 import LottieSplashScreen from 'react-native-lottie-splash-screen';
 
 import { NavigationContainer } from '@react-navigation/native';
@@ -15,15 +14,17 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 const Stack = createNativeStackNavigator();
 
 function App({navigation}) {
+  
   useEffect(() => {
-    LottieSplashScreen.hide(); // here
+    LottieSplashScreen.hide(); // hide splashscreen when this file is done loading aka the app is done loading
   }, []);
+
   return (
+    <Provider store={store}>
     <NavigationContainer>
       <Stack.Navigator 
       screenOptions={{
         headerShown: false,
-
       }}  
       >
         <Stack.Screen
@@ -37,6 +38,7 @@ function App({navigation}) {
         />
       </Stack.Navigator>
     </NavigationContainer>
+    </Provider>
   );
 }
 

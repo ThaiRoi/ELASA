@@ -8,17 +8,81 @@ import {
   TextInput,
   Image,
   TouchableWithoutFeedback,
-  Keyboard
+  Keyboard,
+  Modal
 } from 'react-native';
+import { setUser } from '../user/userSlice';
+import { useDispatch } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
 import * as Animatable from 'react-native-animatable';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-const signupAPI = '';
-const loginAPI = '';
 
-const ContentLogin = (props) => {
+
+
+const ContentLogin = () => {
   const [account, setAccount] = useState('');
   const [password, setPassword] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
+  const navigation = useNavigation();
   return <View>
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={modalVisible}
+      onRequestClose={() => {
+        Alert.alert('Modal has been closed.');
+        setModalVisible(!modalVisible);
+      }}>
+      <View style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 22,
+      }}>
+        <View style={{
+          margin: 20,
+          backgroundColor: 'white',
+          borderRadius: 20,
+          padding: 35,
+          alignItems: 'center',
+          shadowColor: '#000',
+          shadowOffset: {
+            width: 0,
+            height: 2,
+          },
+          shadowOpacity: 0.25,
+          shadowRadius: 4,
+          elevation: 5,
+        }}>
+          <Text style={{
+            marginBottom: 15,
+            textAlign: 'center',
+          }}>Hello World!</Text>
+          <Pressable
+            style={[{
+              borderRadius: 20,
+              padding: 10,
+              elevation: 2,
+            }, {
+              backgroundColor: '#2196F3',
+            }]}
+            onPress={() => setModalVisible(!modalVisible)}>
+            <Text style={{
+              color: 'white',
+              fontWeight: 'bold',
+              textAlign: 'center',
+            }}>Hide Modal</Text>
+          </Pressable>
+        </View>
+      </View>
+    </Modal>
+    <Pressable
+      style={[styles.button, styles.buttonOpen]}
+      onPress={() => setModalVisible(true)}>
+      <Text style={styles.textStyle}>Show Modal</Text>
+    </Pressable>
     <Text style={[styles.text, { marginTop: 20 }]}>Account:</Text>
     <TextInput
       style={styles.inputBox}
@@ -45,8 +109,8 @@ const ContentLogin = (props) => {
         style={{ width: '100%', borderRadius: 15 }}
         onPress={() => {
           {
-            console.log('this is from signin page: ', account, password);
-
+            navigation.navigate('Info');
+            console.log('this is from logini page: ', account, password);
           }
         }}
       >
@@ -57,17 +121,20 @@ const ContentLogin = (props) => {
 
     <Text style={[styles.smallText, { alignSelf: 'center', marginBottom: 20 }]}>or Login with</Text>
     <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
-      <Image style={{ height: 50, width: 52 }} source={require('../assets/icons/_Facebook.png')} />
-      <Image style={{ height: 50, width: 50 }} source={require('../assets/icons/_Google.png')} />
-      <Image style={{ height: 50, width: 50 }} source={require('../assets/icons/_Twitter.png')} />
+      <Image style={{ height: 50, width: 52 }} source={require('../../assets/icons/_Facebook.png')} />
+      <Image style={{ height: 50, width: 50 }} source={require('../../assets/icons/_Google.png')} />
+      <Image style={{ height: 50, width: 50 }} source={require('../../assets/icons/_Twitter.png')} />
     </View>
   </View>
 }
+
 
 const ContentSignup = () => {
   const [account, setAccount] = useState('');
   const [password, setPassword] = useState('');
   const [rePassword, setRePassword] = useState('');
+  const dispatch = useDispatch();
+
   return <View>
     <Text style={[styles.text, { marginTop: 20 }]}>Account:</Text>
     <TextInput
@@ -95,7 +162,7 @@ const ContentSignup = () => {
           color: 'white'
         }}
         style={{ width: '100%', borderRadius: 15 }}
-        onPress={() => { SignUpHandler(account, password, rePassword) }}
+        onPress={() => { SignUpHandler(account, password, rePassword, dispatch) }}
       >
         <Text style={[styles.text, { textAlign: 'center', }]}>Sign up</Text>
       </Pressable>
@@ -105,7 +172,8 @@ const ContentSignup = () => {
 
 }
 
-function SignUpHandler(account, password, rePassword) {
+function SignUpHandler(account, password, rePassword, dispatch) {
+
   var myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
 
@@ -121,26 +189,49 @@ function SignUpHandler(account, password, rePassword) {
     redirect: 'follow'
   };
 
-  fetch("http://192.168.10.78:9000/create-user", requestOptions)
-    .then(response => response.text())
-    .then(result => console.log(result))
-    .catch(error => console.log('error', error));
+  fetch("http://192.168.10.102:9000/account/create-user", requestOptions)
+    .then(response => {
+      if (response.ok) {
+        // Request was successful (status code 200-299)
+        console.log(response);
+        return response.json(); // Parse response body as JSON
+      } else {
+        // Request failed (status code outside 200-299 range)
+        console.log('from respose: ',response);
+        throw new Error('Request failed with status ' + response.status);
+      }
+    })
+    .then(data => {
+      // Handle the response data
+      dispatch(setUser(data));
+      console.log('from data: ', data);
+      // Additional logic based on the response data
+    })
+    .catch(error => {
+      // Handle any errors that occurred during the request
+      console.error('from error: ' ,error);
+    });
 }
+
+
+
 
 function LoginSignup({ navigation }) {
 
   const [active, setActive] = useState(1);
-
   const handleLoginPress = () => {
     setActive(1);
   };
-
   const handleSignupPress = () => {
     setActive(0);
   };
+ 
+
+
 
   return (
     <ScrollView style={{ backgroundColor: '#5BB467' }}>
+
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={{ backgroundColor: '#153C43', alignItems: 'center', flex: 1, flexDirection: 'column' }}>
           <View
@@ -200,6 +291,12 @@ function LoginSignup({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
   activeTitle: ({
     fontSize: 25,
     color: '#F1E4CA',
@@ -209,6 +306,9 @@ const styles = StyleSheet.create({
   }),
   inactiveTitle: {
     fontSize: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#153C43',
+    padding: 14
   },
   textTitle: {
     fontSize: 18,
