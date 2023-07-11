@@ -24,8 +24,104 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 const ContentLogin = () => {
   const [account, setAccount] = useState('');
   const [password, setPassword] = useState('');
-  const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
+
+  var myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  var raw = JSON.stringify({
+    "account": account,
+    "password": password
+  });
+
+  var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
+  };
+
+  return <View>
+
+    <Text style={[styles.text, { marginTop: 20 }]}>Account:</Text>
+    <TextInput
+      style={styles.inputBox}
+      value={account}
+      onChangeText={(value => {
+        setAccount(value)
+      })}
+    />
+    <Text style={styles.text}>Password:</Text>
+    <TextInput
+      style={styles.inputBox}
+      secureTextEntry={true}
+      defaultValue={password}
+      keyboardType='default'
+      onChangeText={value => { setPassword(value) }}
+
+    />
+    <Text style={[styles.smallText, { paddingLeft: 20, paddingTop: 5 }]}>Forgot password?</Text>
+    <View style={[styles.button, { alignContent: 'center', justifyContent: 'center', overflow: 'hidden' }]}>
+      <Pressable
+        android_ripple={{
+          color: 'white'
+        }}
+        style={{ width: '100%', borderRadius: 15 }}
+        onPress={() => {
+          {
+            fetch("http://192.168.10.102:9000/account/login", requestOptions)
+              .then(response => {
+                if (response.ok) {
+                  // Request was successful (status code 200-299)
+                  console.log(response);
+                  return response.json(); // Parse response body as JSON
+                } else {
+                  // Request failed (status code outside 200-299 range)
+                  console.log('from respose: ', response);
+                  throw new Error('Request failed with status ' + response.status);
+                }
+              })
+              .then(data => {
+                // Handle the response data
+                dispatch(setUser(data));
+                console.log('from data: ', data);
+                navigation.navigate('Info');
+                // Additional logic based on the response data
+              })
+              .catch(error => {
+                // Handle any errors that occurred during the request
+                console.error('from error: ', error);
+              });
+            
+            console.log('this is from login page: ', account, password);
+          }
+        }}
+      >
+        <Text style={[styles.text, { textAlign: 'center' }]}>Login</Text>
+      </Pressable>
+
+    </View>
+
+    <Text style={[styles.smallText, { alignSelf: 'center', marginBottom: 20 }]}>or Login with</Text>
+    <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
+      <Image style={{ height: 50, width: 52 }} source={require('../../assets/icons/_Facebook.png')} />
+      <Image style={{ height: 50, width: 50 }} source={require('../../assets/icons/_Google.png')} />
+      <Image style={{ height: 50, width: 50 }} source={require('../../assets/icons/_Twitter.png')} />
+    </View>
+  </View>
+}
+
+function LoginHandler () {
+
+}
+
+const ContentSignup = () => {
+  const [account, setAccount] = useState('');
+  const [password, setPassword] = useState('');
+  const [rePassword, setRePassword] = useState('');
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const dispatch = useDispatch();
+
   return <View>
     <Modal
       animationType="slide"
@@ -83,59 +179,6 @@ const ContentLogin = () => {
       onPress={() => setModalVisible(true)}>
       <Text style={styles.textStyle}>Show Modal</Text>
     </Pressable>
-    <Text style={[styles.text, { marginTop: 20 }]}>Account:</Text>
-    <TextInput
-      style={styles.inputBox}
-      value={account}
-      onChangeText={(value => {
-        setAccount(value)
-      })}
-    />
-    <Text style={styles.text}>Password:</Text>
-    <TextInput
-      style={styles.inputBox}
-      secureTextEntry={true}
-      defaultValue={password}
-      keyboardType='default'
-      onChangeText={value => { setPassword(value) }}
-
-    />
-    <Text style={[styles.smallText, { paddingLeft: 20, paddingTop: 5 }]}>Forgot password?</Text>
-    <View style={[styles.button, { alignContent: 'center', justifyContent: 'center', overflow: 'hidden' }]}>
-      <Pressable
-        android_ripple={{
-          color: 'white'
-        }}
-        style={{ width: '100%', borderRadius: 15 }}
-        onPress={() => {
-          {
-            navigation.navigate('Info');
-            console.log('this is from logini page: ', account, password);
-          }
-        }}
-      >
-        <Text style={[styles.text, { textAlign: 'center' }]}>Login</Text>
-      </Pressable>
-
-    </View>
-
-    <Text style={[styles.smallText, { alignSelf: 'center', marginBottom: 20 }]}>or Login with</Text>
-    <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
-      <Image style={{ height: 50, width: 52 }} source={require('../../assets/icons/_Facebook.png')} />
-      <Image style={{ height: 50, width: 50 }} source={require('../../assets/icons/_Google.png')} />
-      <Image style={{ height: 50, width: 50 }} source={require('../../assets/icons/_Twitter.png')} />
-    </View>
-  </View>
-}
-
-
-const ContentSignup = () => {
-  const [account, setAccount] = useState('');
-  const [password, setPassword] = useState('');
-  const [rePassword, setRePassword] = useState('');
-  const dispatch = useDispatch();
-
-  return <View>
     <Text style={[styles.text, { marginTop: 20 }]}>Account:</Text>
     <TextInput
       style={styles.inputBox}
@@ -197,7 +240,7 @@ function SignUpHandler(account, password, rePassword, dispatch) {
         return response.json(); // Parse response body as JSON
       } else {
         // Request failed (status code outside 200-299 range)
-        console.log('from respose: ',response);
+        console.log('from respose: ', response);
         throw new Error('Request failed with status ' + response.status);
       }
     })
@@ -209,7 +252,7 @@ function SignUpHandler(account, password, rePassword, dispatch) {
     })
     .catch(error => {
       // Handle any errors that occurred during the request
-      console.error('from error: ' ,error);
+      console.error('from error: ', error);
     });
 }
 
@@ -225,7 +268,7 @@ function LoginSignup({ navigation }) {
   const handleSignupPress = () => {
     setActive(0);
   };
- 
+
 
 
 
