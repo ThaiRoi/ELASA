@@ -316,11 +316,11 @@ function LoginSignup({ navigation }) {
 
             </View>
 
-            <View style={{ display: (active ? 'block' : 'none') }}>
+            <View style={{ display: (active ? 'flex' : 'none') }}>
               <ContentLogin />
             </View>
 
-            <View style={{ display: !active ? 'block' : 'none' }}>
+            <View style={{ display: !active ? 'flex' : 'none' }}>
               <ContentSignup />
             </View>
 
