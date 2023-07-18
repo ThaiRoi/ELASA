@@ -11,7 +11,7 @@ import {
 
 function SubSearch () {
     return (
-        <View>
+        <View  style = {{flex: 1, backgroundColor: 'blue'}}>
             <Text>aaaaaaaaaaaaaaaaaaaaaaaaaaaa</Text>
             <Text>SubSearch</Text>
 

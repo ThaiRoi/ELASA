@@ -68,31 +68,32 @@ const ContentLogin = () => {
         style={{ width: '100%', borderRadius: 15 }}
         onPress={() => {
           {
-            fetch("http://192.168.10.102:9000/account/login", requestOptions)
-              .then(response => {
-                if (response.ok) {
-                  // Request was successful (status code 200-299)
-                  console.log(response);
-                  return response.json(); // Parse response body as JSON
-                } else {
-                  // Request failed (status code outside 200-299 range)
-                  console.log('from respose: ', response);
-                  throw new Error('Request failed with status ' + response.status);
-                }
-              })
-              .then(data => {
-                // Handle the response data
-                dispatch(setUser(data));
-                console.log('from data: ', data);
-                navigation.navigate('Info');
-                // Additional logic based on the response data
-              })
-              .catch(error => {
-                // Handle any errors that occurred during the request
-                console.error('from error: ', error);
-              });
+            navigation.navigate('MainApp');
+          //   fetch("http://192.168.10.102:9000/account/login", requestOptions)
+          //     .then(response => {
+          //       if (response.ok) {
+          //         // Request was successful (status code 200-299)
+          //         console.log(response);
+          //         return response.json(); // Parse response body as JSON
+          //       } else {
+          //         // Request failed (status code outside 200-299 range)
+          //         console.log('from respose: ', response);
+          //         throw new Error('Request failed with status ' + response.status);
+          //       }
+          //     })
+          //     .then(data => {
+          //       // Handle the response data
+          //       // dispatch(setUser(data));
+          //       // console.log('from data: ', data);
+          //       navigation.navigate('MainApp');
+          //       // Additional logic based on the response data
+          //     })
+          //     .catch(error => {
+          //       // Handle any errors that occurred during the request
+          //       console.error('from error: ', error);
+          //     });
             
-            console.log('this is from login page: ', account, password);
+          //   console.log('this is from login page: ', account, password);
           }
         }}
       >

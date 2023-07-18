@@ -11,7 +11,7 @@ import {
 
 function Camera () {
     return (
-        <View>
+        <View style = {{flex: 1, backgroundColor: 'red'}}>
             <Text>aaaaaaaaaaaaaaaaaaaaaaaaaaaa</Text>
             <Text>Camera</Text>
 

@@ -11,7 +11,7 @@ import {
 
 function Social () {
     return (
-        <View>
+        <View  style = {{flex: 1, backgroundColor: 'pink'}}>
             <Text>aaaaaaaaaaaaaaaaaaaaaaaaaaaa</Text>
             <Text>Social</Text>
 

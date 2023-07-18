@@ -11,7 +11,7 @@ import {
 
 function Memo () {
     return (
-        <View>
+        <View  style = {{flex: 1, backgroundColor: 'yellow'}}>
             <Text>aaaaaaaaaaaaaaaaaaaaaaaaaaaa</Text>
             <Text>Memo</Text>
 

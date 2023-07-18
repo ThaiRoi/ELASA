@@ -6,7 +6,11 @@ import {
 } from 'react-native';
 import LoginSignup from './screens/LoginSignup';
 import Info from './screens/Info';
+import MainApp from './screens/MainApp';
+import WatchVideo from './screens/WatchVideo';
+
 import LottieSplashScreen from 'react-native-lottie-splash-screen';
+
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -36,6 +40,15 @@ function App({navigation}) {
         name = 'Info'
         component={Info}
         />
+         <Stack.Screen
+        name = 'MainApp'
+        component={MainApp}
+        />
+          <Stack.Screen
+        name = 'WatchVideo'
+        component={WatchVideo}
+        />
+  
       </Stack.Navigator>
     </NavigationContainer>
     </Provider>

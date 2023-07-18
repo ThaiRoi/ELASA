@@ -31,7 +31,7 @@ function MyTabs() {
     LottieSplashScreen.hide(); // hide splashscreen when this file is done loading aka the app is done loading
   }, []);
   return (
-    <NavigationContainer>
+
     <Tab.Navigator
        screenOptions={{
         tabBarActiveTintColor: '#5BB467',
@@ -82,7 +82,7 @@ function MyTabs() {
       />
 
     </Tab.Navigator>
-    </NavigationContainer>
+
   );
 }
 
