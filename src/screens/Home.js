@@ -12,7 +12,8 @@ import {
 } from 'react-native';
 import { useNavigation } from "@react-navigation/native";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-
+// import { useSelector } from "react-redux";
+// import { userReturn } from "../store/store";
 
 
 function Home() {
