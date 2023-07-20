@@ -15,6 +15,7 @@ import YoutubePlayer from "react-native-youtube-iframe";
 import { useSelector } from "react-redux";
 import { userReturn } from "../store/store";
 import { useNavigation } from "@react-navigation/native";
+import serverAddress from "../util/config";
 
 
 function WatchVideo() {
@@ -46,7 +47,7 @@ function WatchVideo() {
   };
 
   const getVideo = () => {
-    fetch("http://192.168.10.50:9000/video/get-video", requestVideoOptions)
+    fetch(`${serverAddress}/video/get-video`, requestVideoOptions)
       .then(response => {
         if (response.ok) {
           // Request was successful (status code 200-299)
@@ -69,7 +70,7 @@ function WatchVideo() {
       .catch(error => {
         // Handle any errors that occurred during the request
         console.error('from error: ', error);
-        setLoadingVideo(false);
+        //setLoadingVideo(false);
 
       });
   }
@@ -85,7 +86,9 @@ function WatchVideo() {
     redirect: 'follow'
   };
   const getSubtitle = () => {
-    fetch("http://192.168.10.50:9000/video/get-subtitle", requestSubtitleOptions)
+    // fetch(`${serverAddress}/video/get-subtitle`, requestSubtitleOptions)
+    fetch(`${serverAddress}/video/get-subtitle`, requestSubtitleOptions)
+
       .then(response => {
         if (response.ok) {
           // Request was successful (status code 200-299)
@@ -109,7 +112,7 @@ function WatchVideo() {
       .catch(error => {
         // Handle any errors that occurred during the request
         console.error('from error: ', error);
-        setLoadingSubtitle(false);
+        //setLoadingSubtitle(false);
 
       });
   }
