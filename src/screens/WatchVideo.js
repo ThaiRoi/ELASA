@@ -36,7 +36,7 @@ function WatchVideo() {
   myHeaders.append("Content-Type", "application/json");
 
   var rawVideo = JSON.stringify({
-    "videoid": "1CpYVvT5T9U",
+    "videoid": "03263_ieRZk",
   });
 
   var requestVideoOptions = {
@@ -76,7 +76,7 @@ function WatchVideo() {
   }
 
   var rawSubtitle = JSON.stringify({
-    "videoid": "64b0f811db436b0be078e1fe",
+    "videoid": "64ba473b731586bc198794d2",
   });
 
   var requestSubtitleOptions = {
@@ -103,7 +103,7 @@ function WatchVideo() {
       })
       .then(data => {
         // Handle the response data
-        // console.log('from data: ', data);
+        //console.log('from data: ', data.data.thai.caption[0]["-start"]);
         setSubtitleData(data);
         setLoadingSubtitle(false);
         //console.log(data.data.thai.caption);
@@ -130,24 +130,24 @@ function WatchVideo() {
 
       const interval = setInterval(async () => {
         const elapsed_sec = await playerRef.current.getCurrentTime(); // this is a promise. dont forget to await
-        // console.log("ibterval")
+       //console.log("ibterval")
         subtitleData.data.thai.caption.forEach((current, index) => {
-          if ((elapsed_sec >= Number(current.start)) && (elapsed_sec < (Number(current.start) + Number(current.duration)))) {
+          if ((elapsed_sec >= current["-start"]) && (elapsed_sec < (current["-start"] + current["-dur"]))) {
             if (trueIndex !== index) {
-              console.log("selected index from interval", trueIndex);
+              //console.log("selected index from interval", trueIndex);
               setSelectedIndex(index);
               trueIndex = index;
-              flatlistRef.current.scrollToIndex({ index: index, animated: true, viewPosition: 0.05 });
+              flatlistRef.current.scrollToIndex({ index: index, animated: true, viewPosition: 0.12 });
             }
 
             //  console.log("current time aka elapsed: ", elapsed)
-            // console.log("from setInterval", current.start, "selected: ", selectedIndex);
+            //console.log("from setInterval", Math.floor(current["-start"]), "selected: ", selectedIndex);
           };
 
         });
 
 
-      }, 500); // 100 ms refresh. increase it if you don't require millisecond precision
+      }, 1000); // 100 ms refresh. increase it if you don't require millisecond precision
 
       return () => {
 
@@ -192,7 +192,7 @@ function WatchVideo() {
           renderItem={({ item, index }) => {
             const backgroundColor = index === selectedIndex ? '#234B76' : '#153C43';
             const color = index === selectedIndex ? '#F1E4CA' : 'gray';
-            const time = item.start;
+            const time = item["-start"];
             // console.log('index be like: ',index);
             //   console.log('selected index: ' ,selectedIndex);
             return (
@@ -206,7 +206,7 @@ function WatchVideo() {
                   backgroundColor: backgroundColor,
                   padding: 10,
                 }}>
-                  <View style={{ flex: 1 }}><Text style={{ fontSize: 15, color: color, fontFamily: 'genshin' }}>{item.text}</Text></View>
+                  <View style={{ flex: 1 }}><Text style={{ fontSize: 15, color: color, fontFamily: 'genshin' }}>{item.t}</Text></View>
                   <View style={{ width: 30, justifyContent: 'center', alignItems: 'flex-end' }}><Text style={{ color: '#5BB467', fontSize: 30 }}>...</Text></View>
                 </View>
               </Pressable>
