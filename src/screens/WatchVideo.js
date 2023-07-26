@@ -15,19 +15,22 @@ import YoutubePlayer from "react-native-youtube-iframe";
 import { useSelector } from "react-redux";
 import { userReturn } from "../store/store";
 import { useNavigation } from "@react-navigation/native";
-import serverAddress from "../util/config";
+import serverAddress from "../global";
 
+ let interval;
 
-function WatchVideo() {
+function WatchVideo({route}) { 
+  const {videoid, title} = route.params;
+  //console.log("passing video id between sscreens: ",videoid, title);
   //  const userInfo = useSelector(userReturn);
   // console.log("userinfo from info page: ",userInfo);
-  const [videoData, setVideoData] = useState({});
-  const [subtitleData, setSubtitleData] = useState({});
+  //const [videoData, setVideoData] = useState({});
+  const [subtitleData, setSubtitleData] = useState([]);
   const [loadingVideo, setLoadingVideo] = useState(true);
   const [loadingSubtitle, setLoadingSubtitle] = useState(true);
   const [selectedIndex, setSelectedIndex] = useState(0);
   // const [elapsed, setElapsed] = useState(0);
-  let trueIndex = 0;
+ 
   const playerRef = useRef();
   const flatlistRef = useRef();
   const navigation = useNavigation();
@@ -35,48 +38,48 @@ function WatchVideo() {
   var myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
 
-  var rawVideo = JSON.stringify({
-    "videoid": "03263_ieRZk",
-  });
+  // var rawVideo = JSON.stringify({
+  //   "videoid": "03263_ieRZk",
+  // });
 
-  var requestVideoOptions = {
-    method: 'POST',
-    headers: myHeaders,
-    body: rawVideo,
-    redirect: 'follow'
-  };
+  // var requestVideoOptions = {
+  //   method: 'POST',
+  //   headers: myHeaders,
+  //   body: rawVideo,
+  //   redirect: 'follow'
+  // };
 
-  const getVideo = () => {
-    fetch(`${serverAddress}/video/get-video`, requestVideoOptions)
-      .then(response => {
-        if (response.ok) {
-          // Request was successful (status code 200-299)
-          //console.log("from response: ",response);
-          return response.json();
-          // Parse response body as JSON
-        } else {
-          // Request failed (status code outside 200-299 range)
-          //console.log('from respose: ', response);
-          throw new Error('Request failed with status ' + response.status);
-        }
-      })
-      .then(data => {
-        // Handle the response data
-        // console.log('from data: ', data);
-        setVideoData(data);
-        setLoadingVideo(false);
-        // Additional logic based on the response data
-      })
-      .catch(error => {
-        // Handle any errors that occurred during the request
-        console.error('from error: ', error);
-        //setLoadingVideo(false);
+  // const getVideo = () => {
+  //   fetch(`${serverAddress}/video/get-video`, requestVideoOptions)
+  //     .then(response => {
+  //       if (response.ok) {
+  //         // Request was successful (status code 200-299)
+  //         //console.log("from response: ",response);
+  //         return response.json();
+  //         // Parse response body as JSON
+  //       } else {
+  //         // Request failed (status code outside 200-299 range)
+  //         //console.log('from respose: ', response);
+  //         throw new Error('Request failed with status ' + response.status);
+  //       }
+  //     })
+  //     .then(data => {
+  //       // Handle the response data
+  //       // console.log('from data: ', data);
+  //       setVideoData(data);
+  //       setLoadingVideo(false);
+  //       // Additional logic based on the response data
+  //     })
+  //     .catch(error => {
+  //       // Handle any errors that occurred during the request
+  //       console.error('from error: ', error);
+  //       //setLoadingVideo(false);
 
-      });
-  }
+  //     });
+  // }
 
   var rawSubtitle = JSON.stringify({
-    "videoid": "64ba473b731586bc198794d2",
+    "videoid": videoid,
   });
 
   var requestSubtitleOptions = {
@@ -104,7 +107,8 @@ function WatchVideo() {
       .then(data => {
         // Handle the response data
         //console.log('from data: ', data.data.thai.caption[0]["-start"]);
-        setSubtitleData(data);
+       // console.log("frtom getSubtitle: ", data.data.captions);
+        setSubtitleData(data.data.captions);
         setLoadingSubtitle(false);
         //console.log(data.data.thai.caption);
         // Additional logic based on the response data
@@ -118,7 +122,7 @@ function WatchVideo() {
   }
 
   useEffect(() => {
-    getVideo();
+    // getVideo();
     getSubtitle();
     // console.log(subtitleData)
   }, []);
@@ -127,21 +131,28 @@ function WatchVideo() {
   useEffect(() => {
     console.log('loadingSubtitle', loadingSubtitle);
     if (!loadingSubtitle) {
+      //console.log("subtitleData is it correct? :", subtitleData);
+      if (interval) clearInterval(interval);
+      interval = setInterval(async () => {
+        const elapsed_sec = Math.round(await playerRef.current.getCurrentTime()); // this is a promise. dont forget to await
+      //console.log("ibterval");
+   
+        subtitleData.forEach((current, index) => { 
+          //console.log(current);
+          //console.log("type start ",  typeof elapsed_sec,"type dur ",  Number(current.dur));
 
-      const interval = setInterval(async () => {
-        const elapsed_sec = await playerRef.current.getCurrentTime(); // this is a promise. dont forget to await
-       //console.log("ibterval")
-        subtitleData.data.thai.caption.forEach((current, index) => {
-          if ((elapsed_sec >= current["-start"]) && (elapsed_sec < (current["-start"] + current["-dur"]))) {
-            if (trueIndex !== index) {
-              //console.log("selected index from interval", trueIndex);
-              setSelectedIndex(index);
-              trueIndex = index;
-              flatlistRef.current.scrollToIndex({ index: index, animated: true, viewPosition: 0.12 });
-            }
+          if ((Math.round(elapsed_sec) >= Math.floor(Number(current.start))) && (Math.round(elapsed_sec) < Math.round(Number(current.start) + Number(current.dur)))) {
+            //console.log("start: ", current.start);
+            // if (trueIndex !== index) {
+              //console.log("selected index from interval", selectedIndex);
+              setSelectedIndex((oldindex) => {console.log("from setselectedindex: ",oldindex, index);
+                                            if(oldindex != index) return index});
+              // trueIndex = index;
+               flatlistRef.current.scrollToIndex({ index: index, animated: true, viewPosition: 0.12 });
+            // }
 
-            //  console.log("current time aka elapsed: ", elapsed)
-            //console.log("from setInterval", Math.floor(current["-start"]), "selected: ", selectedIndex);
+           //console.log("current time aka elapsed: ", elapsed)
+            //console.log("from setInterval", Math.round(current["-start"]), "selected: ", selectedIndex);
           };
 
         });
@@ -163,7 +174,8 @@ function WatchVideo() {
 
 
 
-  if (loadingVideo || loadingSubtitle)
+  // if (loadingVideo || loadingSubtitle)
+  if (loadingSubtitle)
     return (
       <View>
         <Text>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaafuck</Text>
@@ -171,7 +183,10 @@ function WatchVideo() {
 
       </View>
     )
-  if (Object.keys(videoData).length == 0 || Object.keys(subtitleData).length == 0) return (
+
+  // if (Object.keys(videoData).length == 0 || Object.keys(subtitleData).length == 0) 
+  if (Object.keys(subtitleData).length == 0) 
+  return (
     <View style={{ flex: 1, backgroundColor: 'pink' }}>
       <Text>something went wrong, please try again</Text>
     </View>
@@ -181,19 +196,20 @@ function WatchVideo() {
       <YoutubePlayer
         height={204}
         play={true}
-        videoId={videoData.data.thai.videoid}
+        videoId={videoid}
         ref={playerRef}
       />
 
+{/* {(subtitleData == null)} */}
       <View style={{ backgroundColor: '#407950', flex: 1 }}>
         <FlatList
           ref={flatlistRef}
-          data={subtitleData.data.thai.caption}
+          data={subtitleData}
           renderItem={({ item, index }) => {
             const backgroundColor = index === selectedIndex ? '#234B76' : '#153C43';
             const color = index === selectedIndex ? '#F1E4CA' : 'gray';
-            const time = item["-start"];
-            // console.log('index be like: ',index);
+            const time = Math.floor(Number(item.start));
+             //console.log('index be like: ',index);
             //   console.log('selected index: ' ,selectedIndex);
             return (
               <Pressable
@@ -206,7 +222,7 @@ function WatchVideo() {
                   backgroundColor: backgroundColor,
                   padding: 10,
                 }}>
-                  <View style={{ flex: 1 }}><Text style={{ fontSize: 15, color: color, fontFamily: 'genshin' }}>{item.t}</Text></View>
+                  <View style={{ flex: 1 }}><Text style={{ fontSize: 15, color: color, fontFamily: 'genshin' }}>{item.text}</Text></View>
                   <View style={{ width: 30, justifyContent: 'center', alignItems: 'flex-end' }}><Text style={{ color: '#5BB467', fontSize: 30 }}>...</Text></View>
                 </View>
               </Pressable>
@@ -230,7 +246,7 @@ function WatchVideo() {
         <Pressable
           onPress={() => { }}
           android_ripple={{ color: 'white' }}>
-          <Text style={[styles.titleText, ]}>{videoData.data.thai.title}</Text>
+          <Text style={[styles.titleText, ]}>{title}</Text>
         </Pressable>
         </View>
 

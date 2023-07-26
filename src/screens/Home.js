@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useDebugValue, useEffect, useState } from "react";
 import {
     View,
     Text,
@@ -8,10 +8,11 @@ import {
     FlatList,
     ScrollView,
     Pressable,
-    
+
 } from 'react-native';
 import { useNavigation } from "@react-navigation/native";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import serverAddress from "../global";
 // import { useSelector } from "react-redux";
 // import { userReturn } from "../store/store";
 
@@ -19,6 +20,24 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 function Home() {
     const [page, setPage] = useState(1);
     const navigation = useNavigation();
+    const [recommendData, setRecommendData] = useState([]);
+    function getRecommendation() {
+        fetch(`${serverAddress}/video/get-recommendation`)
+        .then(response => response.json())
+        .then(data => {
+            //handle data
+            setRecommendData(data.data.recommendation);
+            console.log("from home tab, recommend data: ", recommendData);
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    }
+    
+    useEffect(
+        getRecommendation
+  
+    , [])
 
     const OriginalContent = () => {
         return (
@@ -44,7 +63,7 @@ function Home() {
             </ScrollView>
         )
     }
-    
+
     const ContentFromYourYoutube = () => {
         return (
             <View>
@@ -64,54 +83,66 @@ function Home() {
                     )}
                     renderItem={({ item }) => <Video title={item.title} />}
                 />
-    
+
             </View>
         )
     }
-    
+
     const ContentMain = () => {
+       
         return (
             <ScrollView>
                 <Text style={styles.titleView}>Creator's recommendations:</Text>
                 <FlatList
-                    data={DATA}
-                    renderItem={(
-                        { item }) => <Pressable onPress={() =>{navigation.navigate('WatchVideo');}}>
-                                            <Recommend title={item.title} param = {navigation} />
-                                        </Pressable>
-                        }
+                    data={recommendData}
+                    renderItem={({ item }) => <Pressable onPress={() => { 
+                        navigation.navigate('WatchVideo', {
+                            videoid : item.videoid,
+                            title : item.title,
+                            });
+                        
+                        }}>
+                        <View style={{ height: 200, width: 260, backgroundColor: '#234B76', margin: 10, borderRadius: 10 }}>
+                            <Image
+                                style={{ height: 140, width: 240, alignSelf: 'center', marginTop: 10, borderTopLeftRadius: 8, borderTopRightRadius: 8 }}
+                                source={{ uri: item.thumbnailurl.maxres.url }}
+                            />
+                            <Text style={[styles.videoTitle]} numberOfLines={2}>{item.title}</Text>
+                        </View>
+                    </Pressable>
+                    }
                     horizontal={true}
                 />
                 <Text style={styles.titleView}>Spaced Repetition Zone:</Text>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
                     <View style={{ height: 160, width: 160, backgroundColor: '#5BB467', borderRadius: 10 }}>
-                        <Text style = {[styles.titleView, {color: '#153C43', fontSize: 20}]}>Video</Text>
-                        <Text style = {styles.normalText}>{"Revisit videos so you can see how much more you can understand now"}</Text>
-                        <Text style = {{fontFamily: 'genshin', fontSize: 20, marginRight: 10, alignSelf: 'flex-end', color: '#E5D5A4'}}>{">>"}</Text>
+                        <Text style={[styles.titleView, { color: '#153C43', fontSize: 20 }]}>Video</Text>
+                        <Text style={styles.normalText}>{"Revisit videos so you can see how much more you can understand now"}</Text>
+                        <Text style={{ fontFamily: 'genshin', fontSize: 20, marginRight: 10, alignSelf: 'flex-end', color: '#E5D5A4' }}>{">>"}</Text>
                     </View>
                     <View style={{ height: 160, width: 160, backgroundColor: '#5BB467', borderRadius: 10 }}>
-                        <Text style = {[styles.titleView, {color: '#153C43', fontSize: 20}]}>Memo</Text>
-                        <Text style = {[styles.normalText, {margin: 7}]}>{"Revisit memos you created to get a refresher"}</Text>
-                        <Text style = {{fontFamily: 'genshin', fontSize: 20, marginRight: 10, alignSelf: 'flex-end', color: '#E5D5A4'}}>{">>"}</Text>
-    
-                        
+                        <Text style={[styles.titleView, { color: '#153C43', fontSize: 20 }]}>Memo</Text>
+                        <Text style={[styles.normalText, { margin: 7 }]}>{"Revisit memos you created to get a refresher"}</Text>
+                        <Text style={{ fontFamily: 'genshin', fontSize: 20, marginRight: 10, alignSelf: 'flex-end', color: '#E5D5A4' }}>{">>"}</Text>
+
+
                     </View>
                 </View>
                 <Text style={styles.titleView}>Analysis/Statistic:</Text>
-                <View style={{ height: 500, width: 300, backgroundColor: '#5BB467', alignSelf: 'center', marginBottom: 40, borderRadius: 10}}>
+                <View style={{ height: 500, width: 300, backgroundColor: '#5BB467', alignSelf: 'center', marginBottom: 40, borderRadius: 10 }}>
                     <Text>Statictic</Text>
                     <Text>Videos watched</Text>
                     <Text>Hours watched</Text>
                     <Text></Text>
                     <Text>Statictic</Text>
                     <Text>Statictic</Text>
-    
-    
+
+
                 </View>
             </ScrollView>
         )
     }
-    
+
     return (
         <View style={{ flex: 1, backgroundColor: "#153C43" }}>
             <View style={{ height: 60, width: "100%", flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingTop: 15 }}>
@@ -157,11 +188,11 @@ function Home() {
 
             <View style={{ flex: 1 }}>
                 <View style={{ display: ((page == 1) ? 'flex' : 'none') }} >
-                    <ContentMain/>
+                    <ContentMain />
                 </View>
 
                 <View style={{ display: ((page == 2) ? 'flex' : 'none') }} >
-                    <ContentFromYourYoutube/>
+                    <ContentFromYourYoutube />
                 </View>
 
                 <View style={{ display: ((page == 3) ? 'flex' : 'none') }}>
@@ -171,7 +202,7 @@ function Home() {
             </View>
         </View>
     )
-    
+
 }
 
 const styles = StyleSheet.create({
@@ -208,15 +239,15 @@ const styles = StyleSheet.create({
 export default Home;
 
 
-const Recommend = ({ title}) => (
-    
-        <View style={{ height: 200, width: 260, backgroundColor: '#234B76', margin: 10, borderRadius: 10 }}>
-            <Image
-                style = {{height: 140, width: 240, alignSelf: 'center', marginTop: 10, borderTopLeftRadius: 8, borderTopRightRadius: 8}}
-                source={{uri : 'https://variety.com/wp-content/uploads/2019/12/pewdiepie.png?w=1024'}}
-            />
-            <Text style={[styles.videoTitle]} numberOfLines={2}>{title}</Text>
-        </View>
+const Recommend = ({ title }) => (
+
+    <View style={{ height: 200, width: 260, backgroundColor: '#234B76', margin: 10, borderRadius: 10 }}>
+        <Image
+            style={{ height: 140, width: 240, alignSelf: 'center', marginTop: 10, borderTopLeftRadius: 8, borderTopRightRadius: 8 }}
+            source={{ uri: 'https://variety.com/wp-content/uploads/2019/12/pewdiepie.png?w=1024' }}
+        />
+        <Text style={[styles.videoTitle]} numberOfLines={2}>{title}</Text>
+    </View>
 
 );
 
