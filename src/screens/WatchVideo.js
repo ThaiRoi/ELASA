@@ -17,7 +17,7 @@ import { userReturn } from "../store/store";
 import { useNavigation } from "@react-navigation/native";
 import serverAddress from "../global";
 
- let interval;
+ let interval, timeout;
 
 function WatchVideo({route}) { 
   const {videoid, title} = route.params;
@@ -26,9 +26,12 @@ function WatchVideo({route}) {
   // console.log("userinfo from info page: ",userInfo);
   //const [videoData, setVideoData] = useState({});
   const [subtitleData, setSubtitleData] = useState([]);
-  const [loadingVideo, setLoadingVideo] = useState(true);
+  // const [loadingVideo, setLoadingVideo] = useState(true);
   const [loadingSubtitle, setLoadingSubtitle] = useState(true);
   const [selectedIndex, setSelectedIndex] = useState(0);
+// var isScrolling = false;
+const [isScrolling, setScrolling] = useState(false);
+  var trueIndex = 0;
   // const [elapsed, setElapsed] = useState(0);
  
   const playerRef = useRef();
@@ -127,38 +130,74 @@ function WatchVideo({route}) {
     // console.log(subtitleData)
   }, []);
 
+
+
+  function runSub() {
+    interval = setInterval(async () => {
+      const elapsed_sec = Math.round(await playerRef.current.getCurrentTime()); // this is a promise. dont forget to await
+    //console.log("ibterval");
+      for (let i=0;i<subtitleData.length;i++){
+        if ((elapsed_sec >= Number(subtitleData[i].start)) && (elapsed_sec < Number(subtitleData[i+1].start))) {
+          if(trueIndex != i) {
+            trueIndex = i;
+            setSelectedIndex(i);
+            // if(!isScrolling){
+              flatlistRef.current.scrollToIndex({ index: i, animated: true, viewPosition: 0.08 });
+            // } 
+            continue;
+          }
+        }
+      } 
+    }, 500);
+  }
   // console.log(subtitleData.data.thai.caption);
   useEffect(() => {
-    console.log('loadingSubtitle', loadingSubtitle);
+    //console.log('loadingSubtitle', loadingSubtitle);
     if (!loadingSubtitle) {
       //console.log("subtitleData is it correct? :", subtitleData);
       if (interval) clearInterval(interval);
-      interval = setInterval(async () => {
-        const elapsed_sec = Math.round(await playerRef.current.getCurrentTime()); // this is a promise. dont forget to await
-      //console.log("ibterval");
-   
-        subtitleData.forEach((current, index) => { 
-          //console.log(current);
-          //console.log("type start ",  typeof elapsed_sec,"type dur ",  Number(current.dur));
+      runSub();
+      // interval = setInterval(async () => {
+      //   const elapsed_sec = Math.round(await playerRef.current.getCurrentTime()); // this is a promise. dont forget to await
+      // //console.log("ibterval");
+      //   for (let i=0;i<subtitleData.length;i++){
+      //     if ((elapsed_sec >= Number(subtitleData[i].start)) && (elapsed_sec < Number(subtitleData[i+1].start))) {
+      //       if(trueIndex != i) {
+      //         trueIndex = i;
+      //         setSelectedIndex(i);
+      //         if(!isScrolling){flatlistRef.current.scrollToIndex({ index: i, animated: true, viewPosition: 0.12 });} 
+      //         continue;
+      //       }
+      //       // setSelectedIndex((oldindex) => {
+      //       //   console.log("from setselectedindex: ",oldindex, i);
+      //       //   if(oldindex < i) return i;
+      //       // });
+      //     }
+      //   }
+      //   // subtitleData.forEach((current, index) => { 
+      //   //   //console.log(current);
+      //   //   //console.log("type start ",  typeof elapsed_sec,"type dur ",  Number(current.dur));
 
-          if ((Math.round(elapsed_sec) >= Math.floor(Number(current.start))) && (Math.round(elapsed_sec) < Math.round(Number(current.start) + Number(current.dur)))) {
-            //console.log("start: ", current.start);
-            // if (trueIndex !== index) {
-              //console.log("selected index from interval", selectedIndex);
-              setSelectedIndex((oldindex) => {console.log("from setselectedindex: ",oldindex, index);
-                                            if(oldindex != index) return index});
-              // trueIndex = index;
-               flatlistRef.current.scrollToIndex({ index: index, animated: true, viewPosition: 0.12 });
-            // }
+      //   //   if ((Math.round(elapsed_sec) >= Math.floor(Number(current.start))) && (Math.round(elapsed_sec) < Math.round(Number(current.start) + Number(current.dur)))) {
+      //   //     //console.log("start: ", current.start);
+      //   //     // if (trueIndex !== index) {
+      //   //       //console.log("selected index from interval", selectedIndex);
+      //   //       setSelectedIndex((oldindex) => {console.log("from setselectedindex: ",oldindex, index);
+      //   //                                     if(oldindex < index) return index});
+      //   //       // trueIndex = index;
+      //   //        flatlistRef.current.scrollToIndex({ index: index, animated: true, viewPosition: 0.12 });
+      //   //     // }
+              
+      //   //    //console.log("current time aka elapsed: ", elapsed)
+      //   //     //console.log("from setInterval", Math.round(current["-start"]), "selected: ", selectedIndex);
+      //   //   };
 
-           //console.log("current time aka elapsed: ", elapsed)
-            //console.log("from setInterval", Math.round(current["-start"]), "selected: ", selectedIndex);
-          };
-
-        });
+      //   // }
+      //   // );
 
 
-      }, 1000); // 100 ms refresh. increase it if you don't require millisecond precision
+
+      // }, 500); // 100 ms refresh. increase it if you don't require millisecond precision
 
       return () => {
 
@@ -205,6 +244,16 @@ function WatchVideo({route}) {
         <FlatList
           ref={flatlistRef}
           data={subtitleData}
+          onScrollToIndexFailed={()=>{}}
+          onScrollBeginDrag={() => {
+            
+            clearInterval(interval);
+          }}
+          onScrollEndDrag={() => {
+              if(timeout) clearTimeout(timeout);
+              timeout = setTimeout(()=> {runSub();}, 2000);
+            }
+          }
           renderItem={({ item, index }) => {
             const backgroundColor = index === selectedIndex ? '#234B76' : '#153C43';
             const color = index === selectedIndex ? '#F1E4CA' : 'gray';
