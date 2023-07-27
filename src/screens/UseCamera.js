@@ -6,34 +6,17 @@ import {
     StyleSheet,
     Pressable,
     TouchableWithoutFeedback,
-    Keyboard,
-    Image
-
+    Keyboard
 } from 'react-native';
-import { useNavigation } from "@react-navigation/native";
 
-function Camera () {
-    const navigation = useNavigation();
+function UseCamera () {
     return (
         <View style = {{flex: 1, backgroundColor: '#153C43'}}>
             <View style = {{margin: 20}}>
             <Text style = {styles.title}>Create memo with real life examples!</Text>
             </View>
-            <Text style = {styles.normalText}>Capture things, places, people... associated with the words or phrases you want to memorize</Text>
-          
-            <Image style={{height: 340, width: 340, alignSelf: 'center', margin: 20}} source={require('../../assets/icons/kanyeMeme.png')} />
-            <Text style = {styles.normalText}>And then create a memo with the media you've taken yourself!</Text>
-            {/* <Text style = {styles.normalText}></Text>
-            <Text style = {[styles.normalText]}>Amazing!</Text> */}
+            <Text>UseCamera</Text>
 
-
-            <Pressable
-            onPress={()=>{navigation.navigate('UseCamera')}}
-            >
-                    <View style = {{height: 50, width: 200, backgroundColor: 'green', alignSelf: 'center', margin: 20, justifyContent: 'center', borderRadius: 10}}>
-                        <Text style = {[styles.normalText, {fontSize: 15, textAlign: 'center', color: '#F1E4CA'}]}>Open camera</Text>
-                    </View>
-                </Pressable>
         </View>
     )
 }
@@ -53,7 +36,7 @@ const styles = StyleSheet.create({
         textAlign: 'center'
     },
     normalText: {
-        fontFamily: 'genshin', fontSize: 15, marginHorizontal: 10, color: '#F1E4CA'
+        fontFamily: 'genshin', fontSize: 15, marginHorizontal: 5, color: '#E5D5A4'
     },
     videoTitle: {
         fontSize: 15,
@@ -77,4 +60,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default Camera;
+export default UseCamera;

@@ -21,6 +21,7 @@ import Camera from './Camera';
 import Memo from './Memo';
 import Social from './Social';
 import SubSearch from './SubSearch';
+import Account from './Account';
 
 import LottieSplashScreen from 'react-native-lottie-splash-screen';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -56,14 +57,14 @@ function MyTabs() {
                     tabBarInactiveBackgroundColor: "#31333B"
                   }}
       />
-      <Tab.Screen name="Camera" 
+      {/* <Tab.Screen name="Camera" 
                   component={Camera} 
                   options={{
                     tabBarIcon : () => <FontAwesome name="camera" color="#5BB467" size={20}/>,
                     tabBarActiveBackgroundColor : "#2B3852",
                     tabBarInactiveBackgroundColor: "#31333B"
                   }}
-      />
+      /> */}
       <Tab.Screen name="Memo" 
                   component={Memo} 
                   options={{
@@ -76,6 +77,14 @@ function MyTabs() {
                   component={Social} 
                   options={{
                     tabBarIcon : () => <FontAwesome name="globe" color="#5BB467" size={25}/>,
+                    tabBarActiveBackgroundColor : "#2B3852",
+                    tabBarInactiveBackgroundColor: "#31333B"
+                  }}
+      />
+       <Tab.Screen name="Account" 
+                  component={Account} 
+                  options={{
+                    tabBarIcon : () => <FontAwesome name="user" color="#5BB467" size={20}/>,
                     tabBarActiveBackgroundColor : "#2B3852",
                     tabBarInactiveBackgroundColor: "#31333B"
                   }}

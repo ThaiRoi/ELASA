@@ -30,7 +30,7 @@ function WatchVideo({route}) {
   const [loadingSubtitle, setLoadingSubtitle] = useState(true);
   const [selectedIndex, setSelectedIndex] = useState(0);
 // var isScrolling = false;
-const [isScrolling, setScrolling] = useState(false);
+// const [isScrolling, setScrolling] = useState(false);
   var trueIndex = 0;
   // const [elapsed, setElapsed] = useState(0);
  
@@ -136,7 +136,7 @@ const [isScrolling, setScrolling] = useState(false);
     interval = setInterval(async () => {
       const elapsed_sec = Math.round(await playerRef.current.getCurrentTime()); // this is a promise. dont forget to await
     //console.log("ibterval");
-      for (let i=0;i<subtitleData.length;i++){
+      for (let i=0;i<subtitleData.length -1 ;i++){
         if ((elapsed_sec >= Number(subtitleData[i].start)) && (elapsed_sec < Number(subtitleData[i+1].start))) {
           if(trueIndex != i) {
             trueIndex = i;

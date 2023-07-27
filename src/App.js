@@ -8,6 +8,10 @@ import LoginSignup from './screens/LoginSignup';
 import Info from './screens/Info';
 import MainApp from './screens/MainApp';
 import WatchVideo from './screens/WatchVideo';
+import VideoRepetition from './screens/VideoRepetition';
+import MemoRepetition from './screens/MemoRepetition';
+import Statistic from './screens/Statistic';
+import UseCamera from './screens/UseCamera';
 
 import LottieSplashScreen from 'react-native-lottie-splash-screen';
 
@@ -47,6 +51,22 @@ function App({navigation}) {
           <Stack.Screen
         name = 'WatchVideo'
         component={WatchVideo}
+        />
+         <Stack.Screen
+        name = 'VideoRepetition'
+        component={VideoRepetition}
+        />
+            <Stack.Screen
+        name = 'MemoRepetition'
+        component={MemoRepetition}
+        />
+         <Stack.Screen
+        name = 'Statistic'
+        component={Statistic}
+        />
+         <Stack.Screen
+        name = 'UseCamera'
+        component={UseCamera}
         />
   
       </Stack.Navigator>

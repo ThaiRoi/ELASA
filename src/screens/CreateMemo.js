@@ -6,49 +6,29 @@ import {
     StyleSheet,
     Pressable,
     TouchableWithoutFeedback,
-    Keyboard,
-    Image
+    Keyboard
 } from 'react-native';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-function Social () {
+function CreateMemo () {
     return (
-        <View  style = {{flex: 1, backgroundColor: '#153C43'}}>
-            <Text style = {[styles.title, {marginTop: 15}]}>Social</Text>
-             <View style={{ height: 50, flexDirection: 'row'}}>
-                    <Image style={{ height: 45, width: 41, margin: 5 }} source={require('../../assets/icons/user.png')} />
-                    <Text style= {styles.normalText}>Post with Memo</Text>
-                </View>
-            
-            <Text style= {styles.normalText}>?</Text>
-
-            <Text style= {styles.normalText}>profile</Text>
-
-            <View style = {{backgroundColor: 'green'}}>
-            <Text style= {styles.normalText}>Title</Text>
-            <Text style= {styles.normalText}>Captions</Text>
-            <Text style= {styles.normalText}>media</Text>
-            <Text style= {styles.normalText}>author</Text>
-            <Text style= {styles.normalText}>likes</Text>
-            <Text style= {styles.normalText}>comments
-            </Text>
-
-
-
-
-                
-
+        <View style = {{flex: 1, backgroundColor: '#153C43'}}>
+            <View style = {{margin: 20}}>
+            <Text style = {styles.title}>Help</Text>
             </View>
+            <Text>CreateMemo</Text>
 
         </View>
     )
 }
+
 
 const styles = StyleSheet.create({
     activeTitle: {
         fontSize: 20,
         color: '#5BB467',
         fontFamily: 'genshin',
-        textAlign: 'center'
+        textAlign: 'center',
     },
     title: {
         fontSize: 20,
@@ -80,4 +60,5 @@ const styles = StyleSheet.create({
         margin: 15,
     },
 })
-export default Social;
+
+export default CreateMemo;
