@@ -14,28 +14,50 @@ function Social () {
     return (
         <View  style = {{flex: 1, backgroundColor: '#153C43'}}>
             <Text style = {[styles.title, {marginTop: 15}]}>Social</Text>
-             <View style={{ height: 50, flexDirection: 'row'}}>
+             <View style={{ height: 50, flexDirection: 'row', justifyContent: 'space-evenly', alignItems:'center'}}>
                     <Image style={{ height: 45, width: 41, margin: 5 }} source={require('../../assets/icons/user.png')} />
                     <Text style= {styles.normalText}>Post with Memo</Text>
+                    <Text style= {styles.normalText}>!! Rules</Text>
                 </View>
             
-            <Text style= {styles.normalText}>?</Text>
+            
 
             <Text style= {styles.normalText}>profile</Text>
 
-            <View style = {{backgroundColor: 'green'}}>
-            <Text style= {styles.normalText}>Title</Text>
-            <Text style= {styles.normalText}>Captions</Text>
-            <Text style= {styles.normalText}>media</Text>
-            <Text style= {styles.normalText}>author</Text>
-            <Text style= {styles.normalText}>likes</Text>
-            <Text style= {styles.normalText}>comments
-            </Text>
+            {/* <View style={{ backgroundColor: 'green', width: 320, justifyContent: 'center', alignSelf: 'center' }}>
+                <Text style={styles.normalText}>Title       save</Text>
+                <Text style={styles.normalText}>media</Text>
+                <Text style={styles.normalText}>Captions</Text>
+                <Text style={styles.normalText}>author</Text>
+                <Text style={styles.normalText}>likes</Text>
+                <Text style={styles.normalText}>comments</Text>
+            </View> */}
+             <View style={{ height: 400, width: 320, backgroundColor: '#234B76', margin: 20, marginBottom: 50 }}>
+                <View style={{ margin: 5, flexDirection: 'row', justifyContent: 'center' }}>
+                    <View style={{ flex: 1 }}></View>
+                    <View style={{ flex: 6 }}>
+                        <Text style={[styles.title]}>Filthy Frank</Text>
+                    </View>
+                    <View style={{ flex: 1 }}>
+                        <Text style={[styles.normalText]}>...</Text>
+                    </View>
+                </View>
+                <Image
+                    source={{ uri: 'https://i1.sndcdn.com/artworks-000118768405-0t6s1f-t500x500.jpg' }}
+                    style={{ height: 200, width: 300, alignSelf: 'center' }}
+                />
 
+                <Text style={[styles.normalText,]} numberOfLines={6}>
+                    The tiers are shifting. The omniverses are under attack. And only one man has the chromosomes to make things right. Or does he? Filthy Frank begins life as the harmless creator of extinction level radioactive weapons, but is taken far into the deepest recesses of the omniverses to learn how everything came to be and how everything will be. </Text>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 15 }}>
+                    <View style={{ flexDirection: 'row' }}>
+                        <Text style={styles.normalText}>meter</Text>
+                        <Text style={styles.normalText}>60%</Text>
+                    </View>
 
+                    <Text style={styles.normalText}>author</Text>
+                </View>
 
-
-                
 
             </View>
 

@@ -10,13 +10,13 @@ import {
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-function CreateMemo () {
+function SearchMemo () {
     return (
         <View style = {{flex: 1, backgroundColor: '#153C43'}}>
             <View style = {{margin: 20}}>
-            <Text style = {styles.title}>create memeo</Text>
+            <Text style = {styles.title}>search Memo</Text>
             </View>
-            <Text>CreateMemo</Text>
+            <Text>SearchMemo</Text>
 
         </View>
     )
@@ -61,4 +61,4 @@ const styles = StyleSheet.create({
     },
 })
 
-export default CreateMemo;
+export default SearchMemo;

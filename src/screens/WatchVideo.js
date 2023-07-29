@@ -283,7 +283,7 @@ function WatchVideo({route}) {
       <View style={{ height: 50, flexDirection: 'row' }}>
         <View style={{ flex: 2,}}>
           <Pressable
-            onPress={() => {navigation.navigate('Home')}}
+            onPress={() => {navigation.goBack()}}
             android_ripple={{ color: 'white' }}
       
           >

@@ -11,59 +11,120 @@ import {
     ScrollView
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { useNavigation } from "@react-navigation/native";
+import { Image } from "react-native-animatable";
 
 
 function Memo() {
+    const navigation = useNavigation();
     return (
         <ScrollView style={{ flex: 1, backgroundColor: '#153C43' }}>
             <Text style={[styles.title, { margin: 15 }]}>MEMO flashcards</Text>
 
+            <View style={{ marginBottom: 20 }}>
+                <Pressable
+                    onPress={() => { navigation.navigate('DailyTest') }}
+                >
+                    <ImageBackground
+                        source={require('../../assets/icons/test.png')}
+                        style={{ height: 130, marginHorizontal: 15, borderRadius: 10 }}
+                    >
+                        <Text style={{ fontFamily: 'genshin', fontSize: 35, color: '#153C43' }}>  Daily</Text>
+                        <Text style={{ fontFamily: 'genshin', fontSize: 35, color: '#153C43' }}>  Test</Text>
+                        <Text>        Click to start!</Text>
+
+                    </ImageBackground>
+                </Pressable>
+            </View>
+
             <View style={{ height: 80, flexDirection: 'row', justifyContent: 'space-evenly' }}>
-                <View style={{ height: 60, width: '48%', backgroundColor: '#5BB467', borderRadius: 10, justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
-                    <FontAwesome name="plus" color="#153C43" size={20} />
-                    <Text style={[styles.normalText, { textAlign: 'center', color: '#153C43' }]}>Create New</Text>
-                </View>
-                <View style={{ height: 60, width: '48%', backgroundColor: '#5BB467', borderRadius: 10, justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
-                    <FontAwesome name="search" color="#153C43" size={20} />
-                    <Text style={[styles.normalText, { textAlign: 'center', color: '#153C43' }]}>Sreach</Text>
-                </View>
+                <Pressable
+                    onPress={() => { navigation.navigate('CreateMemo') }}
+                    style={{ width: '43.5%', }}
+                >
+                    <View style={{ height: 60, width: '100%', backgroundColor: '#5BB467', borderRadius: 10, justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
+                        <FontAwesome name="plus" color="#153C43" size={20} />
+                        <Text style={[styles.normalText, { textAlign: 'center', color: '#153C43' }]}>Create New</Text>
+                    </View>
+                </Pressable>
+
+                <Pressable
+                    onPress={() => { navigation.navigate('SearchMemo') }}
+                    style={{ width: '43.5%', }}
+                >
+                    <View style={{ height: 60, width: '100%', backgroundColor: '#5BB467', borderRadius: 10, justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
+                        <FontAwesome name="search" color="#153C43" size={20} />
+                        <Text style={[styles.normalText, { textAlign: 'center', color: '#153C43' }]}>Search</Text>
+                    </View>
+                </Pressable>
+
 
             </View>
 
-            <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', marginBottom: 20}}>
-                <View style = {{width: 100, backgroundColor: '#E5D5A4', paddingVertical: 10, alignContent: 'center', justifyContent: 'center', borderRadius: 10}}>
-                    <View style = {{alignSelf: 'center'}}><FontAwesome name="circle" color="red" size={20}/></View>
-                    <Text style={[styles.normalText, {color: '#153C43'}]}>New</Text>
-                    <Text style={[styles.normalText, {fontSize: 25, color: '#153C43'}]}>1</Text>
-                </View>
-                <View style = {{width: 100, backgroundColor: '#E5D5A4', paddingVertical: 10, alignContent: 'center', justifyContent: 'center', borderRadius: 10}}>
-                <View style = {{alignSelf: 'center'}}><FontAwesome name="circle" color="yellow" size={20}/></View>
-                    <Text style={[styles.normalText, {color: '#153C43'}]}>Learning</Text>
-                    <Text style={[styles.normalText, {fontSize: 25, color: '#153C43'}]}>2</Text>
-                </View>
-                <View style = {{width: 100, backgroundColor: '#E5D5A4', paddingVertical: 10, alignContent: 'center', justifyContent: 'center', borderRadius: 10}}>
-                <View style = {{alignSelf: 'center'}}><FontAwesome name="circle" color="#66ff00" size={20}/></View>
-                    <Text style={[styles.normalText, {color: '#153C43'}]}>Mastered</Text>
-                    <Text style={[styles.normalText, {fontSize: 25, color: '#153C43'}]}>3</Text>
-                </View>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-evenly', marginBottom: 20 }}>
+                <Pressable
+                    onPress={() => { navigation.navigate('SeeMemo', { type: 1 }) }}
+                >
+                    <View style={{ width: 100, backgroundColor: '#E5D5A4', paddingVertical: 10, alignContent: 'center', justifyContent: 'center', borderRadius: 10 }}>
+                        <View style={{ alignSelf: 'center' }}><FontAwesome name="circle" color="red" size={20} /></View>
+                        <Text style={[styles.normalText, { color: '#153C43' }]}>New</Text>
+                        <Text style={[styles.normalText, { fontSize: 25, color: '#153C43' }]}>1</Text>
+                    </View>
+                </Pressable>
+
+                <Pressable
+                    onPress={() => { navigation.navigate('SeeMemo', { type: 2 }) }}
+                >
+                    <View style={{ width: 100, backgroundColor: '#E5D5A4', paddingVertical: 10, alignContent: 'center', justifyContent: 'center', borderRadius: 10 }}>
+                        <View style={{ alignSelf: 'center' }}><FontAwesome name="circle" color="yellow" size={20} /></View>
+                        <Text style={[styles.normalText, { color: '#153C43' }]}>Learning</Text>
+                        <Text style={[styles.normalText, { fontSize: 25, color: '#153C43' }]}>2</Text>
+                    </View>
+                </Pressable>
+
+                <Pressable
+                    onPress={() => { navigation.navigate('SeeMemo', { type: 3 }) }}
+                >
+                    <View style={{ width: 100, backgroundColor: '#E5D5A4', paddingVertical: 10, alignContent: 'center', justifyContent: 'center', borderRadius: 10 }}>
+                        <View style={{ alignSelf: 'center' }}><FontAwesome name="circle" color="#66ff00" size={20} /></View>
+                        <Text style={[styles.normalText, { color: '#153C43' }]}>Mastered</Text>
+                        <Text style={[styles.normalText, { fontSize: 25, color: '#153C43' }]}>3</Text>
+                    </View>
+                </Pressable>
+
             </View>
 
-            <View style = {{marginBottom: 20}}>
-            <ImageBackground 
-            source={require('../../assets/icons/test.png')}
-            style = {{height: 110, marginHorizontal: 15, borderRadius: 10}}
-            >
-                <Text style={{fontFamily: 'genshin', fontSize: 35, color: '#153C43'}}>  Daily</Text>
-                <Text style={{fontFamily: 'genshin', fontSize: 35, color: '#153C43'}}>  Test</Text>
 
-            </ImageBackground>
+
+            <Text style={[styles.title, { textAlign: 'left', marginHorizontal: 15, marginVertical: 10, fontSize: 23 }]}>Explore:</Text>
+
+            <View style={{ height: 400, width: 320, backgroundColor: '#234B76', margin: 20, marginBottom: 50, borderRadius: 10 }}>
+                <View style={{ margin: 5, flexDirection: 'row', justifyContent: 'center' }}>
+                    <View style={{ flex: 1 }}></View>
+                    <View style={{ flex: 6 }}>
+                        <Text style={[styles.title]}>Filthy Frank</Text>
+                    </View>
+                    <View style={{ flex: 1 }}>
+                        <Text style={[styles.normalText]}>...</Text>
+                    </View>
+                </View>
+                <Image
+                    source={{ uri: 'https://i1.sndcdn.com/artworks-000118768405-0t6s1f-t500x500.jpg' }}
+                    style={{ height: 200, width: 300, alignSelf: 'center' }}
+                />
+
+                <Text style={[styles.normalText,]} numberOfLines={6}>
+                    The tiers are shifting. The omniverses are under attack. And only one man has the chromosomes to make things right. Or does he? Filthy Frank begins life as the harmless creator of extinction level radioactive weapons, but is taken far into the deepest recesses of the omniverses to learn how everything came to be and how everything will be. </Text>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 15 }}>
+                    
+                    <Text style={[styles.normalText, {fontSize: 12}]}>Topic: Internet Figure</Text>
+                   <View style={{ flexDirection: 'row' }}>
+                        <Text style={styles.normalText}>author</Text>
+                    </View>
+                </View>
+
+
             </View>
-
-            <Text style={[styles.title, {textAlign: 'left', marginHorizontal: 15, marginVertical: 10}]}>Newly created</Text>
-            <Text style={[styles.title, {textAlign: 'left', marginHorizontal: 15, marginVertical: 10}]}>Learning</Text>
-            <Text style={[styles.title, {textAlign: 'left', marginHorizontal: 15, marginVertical: 10}]}>Mastered</Text>
-
-
 
         </ScrollView>
     )
@@ -71,8 +132,8 @@ function Memo() {
 
 const styles = StyleSheet.create({
     activeTitle: {
-        fontSize: 20,
-        color: '#5BB467',
+        fontSize: 25,
+        color: '#F1E4CA',
         fontFamily: 'genshin',
         textAlign: 'center'
     },

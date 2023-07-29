@@ -12,6 +12,10 @@ import VideoRepetition from './screens/VideoRepetition';
 import MemoRepetition from './screens/MemoRepetition';
 import Statistic from './screens/Statistic';
 import UseCamera from './screens/UseCamera';
+import CreateMemo from './screens/CreateMemo';
+import DailyTest from './screens/DailyTest';
+import SearchMemo from './screens/SearchMemo';
+import SeeMemo from './screens/SeeMemo';
 
 import LottieSplashScreen from 'react-native-lottie-splash-screen';
 
@@ -21,7 +25,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 const Stack = createNativeStackNavigator();
 
-function App({navigation}) {
+function App() {
   
   useEffect(() => {
     LottieSplashScreen.hide(); // hide splashscreen when this file is done loading aka the app is done loading
@@ -67,6 +71,22 @@ function App({navigation}) {
          <Stack.Screen
         name = 'UseCamera'
         component={UseCamera}
+        />
+         <Stack.Screen
+        name = 'CreateMemo'
+        component={CreateMemo}
+        />
+        <Stack.Screen
+        name = 'DailyTest'
+        component={DailyTest}
+        />
+         <Stack.Screen
+        name = 'SearchMemo'
+        component={SearchMemo}
+        />
+           <Stack.Screen
+        name = 'SeeMemo'
+        component={SeeMemo}
         />
   
       </Stack.Navigator>

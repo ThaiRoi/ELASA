@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {
     View,
     Text,
@@ -12,26 +12,62 @@ import {
 } from 'react-native';
 import { withTiming } from "react-native-reanimated";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import serverAddress from "../global";
+import { useNavigation } from "@react-navigation/native";
+
+const axios = require('axios').default;
+
 
 
 function SubSearch () {
+const navigation = useNavigation();
+const [videoFound, setVideoFound] = useState([]);
 const [searched, setSearched] = useState(false);
-
+const [wordToFind, setWordToFind] = useState('');
+useEffect(() =>{
+    return setSearched(false);
+},[])
+    const searchHandler = ()=> {
+        //  console.log('pressed')
+        if(wordToFind == '') return;
+        console.log(wordToFind);
+        setVideoFound([]);
+        axios.post(`${serverAddress}/video/search-subtitle`, {
+            "wordToFind": wordToFind
+          })
+          .then(function (response) {
+            setVideoFound(response.data.data.finalRes);
+            console.log(response.data.data.finalRes);
+          })
+          .then(()=>{
+             setSearched(true);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+        
+        // setSearched(true);
+    }
     return (
         <View  style = {{flex: 1, backgroundColor: '#153C43'}}>
             <Text style = {[styles.title, {marginTop: 15}]}>Search by Subtitles</Text>
             <View style={{ height: 60, width: "100%", flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingTop: 15 }}>
                 <View style={{ width: "90%", flexDirection: 'row' }} >
                     <View style={{ width: 'auto', justifyContent: 'center', paddingLeft: 8, borderTopLeftRadius: 50, borderBottomLeftRadius: 50, backgroundColor: '#F1E4CA', paddingRight: 5 }}><FontAwesome name="search" size={25} /></View>
-                    <TextInput style={{ width: '90%', backgroundColor: '#F1E4CA', borderTopRightRadius: 50, borderBottomRightRadius: 50 }}
+                    <TextInput 
+                        style={{ width: '90%', backgroundColor: '#F1E4CA', borderTopRightRadius: 50, borderBottomRightRadius: 50 }}
                         placeholder="subtitle search"
+                        onChangeText={(v)=> {
+                            setWordToFind(v);
+                            // console.log(wordToFind);
+                        }}  
                     />
                 </View>
                
             </View>
             <View></View>
             <Pressable
-            onPress={()=>{setSearched(!searched)}}
+            onPress={()=>{searchHandler()}}
             >
                     <View style = {{height: 50, width: 200, backgroundColor: 'green', alignSelf: 'center', margin: 20, justifyContent: 'center', borderRadius: 10}}>
                         <Text style = {[styles.normalText, {fontSize: 15, textAlign: 'center', color: '#F1E4CA'}]}>Search</Text>
@@ -49,7 +85,7 @@ const [searched, setSearched] = useState(false);
             
             :
             <View style = {{flex: 1}}>
-                <FlatList
+                {/* <FlatList
                 data = {DATA}
                 renderItem={({item}) => (
                     <View style = {{height: 300, width: 340, backgroundColor: '#234B76', margin: 10, alignContent: 'center', borderRadius: 12}}>
@@ -62,6 +98,30 @@ const [searched, setSearched] = useState(false);
 
                      </View>   
                 )}
+                
+                /> */}
+
+                <FlatList
+                    data={videoFound}
+                    renderItem={({ item }) => <Pressable
+                        android_ripple={{ color: 'white' }}
+                        onPress={() => {
+                            navigation.navigate('WatchVideo', {
+                                videoid: item.videoid,
+                                title: item.title,
+                            });
+
+                        }}>
+                        <View style={{ height: 200, width: 260, backgroundColor: '#234B76', margin: 10, borderRadius: 10 }}>
+                            <Image
+                                style={{ height: 140, width: 240, alignSelf: 'center', marginTop: 10, borderTopLeftRadius: 8, borderTopRightRadius: 8 }}
+                                source={{ uri: item.thumbnailurl.maxres.url }}
+                            />
+                            <Text style={[styles.videoTitle]} numberOfLines={2}>{item.title}</Text>
+                        </View>
+                    </Pressable>
+                    }
+                    horizontal={true}
                 />
 
             </View>
