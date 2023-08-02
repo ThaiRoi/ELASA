@@ -31,7 +31,7 @@ function Memo() {
                     >
                         <Text style={{ fontFamily: 'genshin', fontSize: 35, color: '#153C43' }}>  Daily</Text>
                         <Text style={{ fontFamily: 'genshin', fontSize: 35, color: '#153C43' }}>  Test</Text>
-                        <Text>        Click to start!</Text>
+                        <Text>        Press to start!</Text>
 
                     </ImageBackground>
                 </Pressable>

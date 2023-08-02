@@ -8,12 +8,14 @@ import {
     TouchableWithoutFeedback,
     Keyboard,
     Image,
-    FlatList
+    FlatList,
+    ActivityIndicator
 } from 'react-native';
 import { withTiming } from "react-native-reanimated";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import serverAddress from "../global";
 import { useNavigation } from "@react-navigation/native";
+import Camera from "./Camera";
 
 const axios = require('axios').default;
 
@@ -24,12 +26,20 @@ const navigation = useNavigation();
 const [videoFound, setVideoFound] = useState([]);
 const [searched, setSearched] = useState(false);
 const [wordToFind, setWordToFind] = useState('');
+const [loading, setLoading] = useState(false);
 useEffect(() =>{
     return setSearched(false);
 },[])
     const searchHandler = ()=> {
         //  console.log('pressed')
-        if(wordToFind == '') return;
+        // setLoading(true);
+        if(wordToFind == '') {
+            setSearched(false);
+            return;
+        }
+         console.log('pressed')
+        setLoading(true);
+
         console.log(wordToFind);
         setVideoFound([]);
         axios.post(`${serverAddress}/video/search-subtitle`, {
@@ -37,10 +47,12 @@ useEffect(() =>{
           })
           .then(function (response) {
             setVideoFound(response.data.data.finalRes);
-            console.log(response.data.data.finalRes);
+            //console.log('console log response search subtitle api: ',response.data.data.finalRes.thumbnailurl.maxres.url);
           })
           .then(()=>{
+            setLoading(false);
              setSearched(true);
+             console.log("video found: ", videoFound);
           })
           .catch(function (error) {
             console.log(error);
@@ -48,6 +60,7 @@ useEffect(() =>{
         
         // setSearched(true);
     }
+    //console.log("video found, from outside: ", videoFound);
     return (
         <View  style = {{flex: 1, backgroundColor: '#153C43'}}>
             <Text style = {[styles.title, {marginTop: 15}]}>Search by Subtitles</Text>
@@ -73,10 +86,14 @@ useEffect(() =>{
                         <Text style = {[styles.normalText, {fontSize: 15, textAlign: 'center', color: '#F1E4CA'}]}>Search</Text>
                     </View>
                 </Pressable>
-           
 
             {!searched ? 
-            <View style= {{margin: 20}}>
+            <View style= {{marginHorizontal: 20}}>
+                <ActivityIndicator
+                size = 'large'
+                animating = {loading}
+                style = {{margin: 20}}
+           />
                 <Text style = {[styles.normalText, {textAlign: 'center'}]}>Searching for specific words and phrases in a video allows you to have exposure to the targeted words in their natural context, enabling deliberate acquisition practice.</Text>
             
                 <Image style={{height: 200, width: 200, alignSelf: 'flex-end', margin: 20}} source={require('../../assets/icons/tighnariTeaching.png')} />
@@ -103,7 +120,7 @@ useEffect(() =>{
 
                 <FlatList
                     data={videoFound}
-                    renderItem={({ item }) => <Pressable
+                    renderItem={({ item, index }) => <Pressable
                         android_ripple={{ color: 'white' }}
                         onPress={() => {
                             navigation.navigate('WatchVideo', {
@@ -115,13 +132,13 @@ useEffect(() =>{
                         <View style={{ height: 200, width: 260, backgroundColor: '#234B76', margin: 10, borderRadius: 10 }}>
                             <Image
                                 style={{ height: 140, width: 240, alignSelf: 'center', marginTop: 10, borderTopLeftRadius: 8, borderTopRightRadius: 8 }}
-                                source={{ uri: item.thumbnailurl.maxres.url }}
+                                source={{ uri: item.thumbnailurl.default.url}}
                             />
                             <Text style={[styles.videoTitle]} numberOfLines={2}>{item.title}</Text>
                         </View>
                     </Pressable>
                     }
-                    horizontal={true}
+                    horizontal={false}
                 />
 
             </View>

@@ -8,21 +8,44 @@ import {
     TouchableWithoutFeedback,
     Keyboard
 } from 'react-native';
-
+import { useNavigation } from "@react-navigation/native";
+import { clearUser } from "../user/userSlice";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useDispatch } from "react-redux";
 function Account () {
+    const navigation = useNavigation();
+  const dispatch = useDispatch();
+
     return (
         <View  style = {{flex: 1, backgroundColor: '#153C43'}}>
 
             <Text style = {styles.title}>Account</Text>
             <Text style = {styles.normalText}>Name and shit</Text>
             <Text style = {styles.normalText}>Progress</Text>
+            <Text style = {styles.normalText}>History</Text>
 
             <Text style = {styles.normalText}>Change Personal Info</Text>
             <Text style = {styles.normalText}>Settings</Text>
             <Text style = {styles.normalText}>Support</Text>
             <Text style = {styles.normalText}>Upgrade to Pro</Text>
             
-            <Text style = {styles.normalText}>Log out</Text>
+            <Pressable 
+            onPress={async()=>{
+                try {
+                    await AsyncStorage.removeItem('userData');
+                    dispatch(clearUser());
+                    navigation.navigate('LoginSignup')
+                  } catch(e) {
+                    console.log(e);
+                  }
+                
+                  console.log('Done.')
+            }}
+            >
+            <View style = {{height: 100, width: 200, backgroundColor: 'red'}}>
+                 <Text style = {styles.normalText}>Log out</Text>
+            </View>
+           </Pressable>
 
             
 

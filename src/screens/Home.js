@@ -13,11 +13,12 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import serverAddress from "../global";
-// import { useSelector } from "react-redux";
-// import { userReturn } from "../store/store";
+import { useSelector } from "react-redux";
+import { userReturn } from "../store/store";
 
 
 function Home() {
+    const userData = useSelector(userReturn);
     const [page, setPage] = useState(1);
     const navigation = useNavigation();
     const [recommendData, setRecommendData] = useState([]);
@@ -163,8 +164,13 @@ function Home() {
 
     return (
         <View style={{ flex: 1, backgroundColor: "#153C43" }}>
+            <Pressable
+            onPress={() => {
+                console.log(userData);
+            }}
+            >
             <Text style = {[styles.title, {marginTop: 15}]}>HOME</Text>
-
+            </Pressable>
             <View style={{ height: 60, width: "100%", flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingTop: 15 }}>
                 {/* <View style={{ height: 50, justifyContent: 'center' }}>
                     <Image style={{ height: 45, width: 41, margin: 5 }} source={require('../../assets/icons/user.png')} />

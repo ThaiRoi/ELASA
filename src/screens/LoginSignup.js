@@ -11,10 +11,13 @@ import {
   Keyboard,
   Modal
 } from 'react-native';
+import serverAddress from "../global";
 import { setUser } from '../user/userSlice';
-import { useDispatch } from 'react-redux';
+import { userReturn } from '../store/store';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import * as Animatable from 'react-native-animatable';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -25,6 +28,8 @@ const ContentLogin = () => {
   const [account, setAccount] = useState('');
   const [password, setPassword] = useState('');
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const userData = useSelector(userReturn);
 
   var myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
@@ -68,32 +73,37 @@ const ContentLogin = () => {
         style={{ width: '100%', borderRadius: 15 }}
         onPress={() => {
           {
-            navigation.navigate('MainApp');
-          //   fetch("http://192.168.10.102:9000/account/login", requestOptions)
-          //     .then(response => {
-          //       if (response.ok) {
-          //         // Request was successful (status code 200-299)
-          //         console.log(response);
-          //         return response.json(); // Parse response body as JSON
-          //       } else {
-          //         // Request failed (status code outside 200-299 range)
-          //         console.log('from respose: ', response);
-          //         throw new Error('Request failed with status ' + response.status);
-          //       }
-          //     })
-          //     .then(data => {
-          //       // Handle the response data
-          //       // dispatch(setUser(data));
-          //       // console.log('from data: ', data);
-          //       navigation.navigate('MainApp');
-          //       // Additional logic based on the response data
-          //     })
-          //     .catch(error => {
-          //       // Handle any errors that occurred during the request
-          //       console.error('from error: ', error);
-          //     });
-            
-          //   console.log('this is from login page: ', account, password);
+            // navigation.navigate('MainApp');
+              fetch(`${serverAddress}/account/login`, requestOptions)
+                .then(response => {
+                  if (response.ok) {
+                    // Request was successful (status code 200-299)
+                    console.log(response);
+                    return response.json(); // Parse response body as JSON
+                  } else {
+                    // Request failed (status code outside 200-299 range)
+                    console.log('from respose: ', response);
+                    throw new Error('Request failed with status ' + response.status);
+                  }
+                })
+                .then( async (data) => {
+                  // Handle the response data
+                  try {
+                    await AsyncStorage.setItem('userData', JSON.stringify(data.data));
+                  } catch (error) {
+                    console.log(error);
+                  }
+                  dispatch(setUser(data.data));
+                  console.log('from data: ', data);
+                  navigation.navigate('MainApp');
+                  // Additional logic based on the response data
+                })
+                .catch(error => {
+                  // Handle any errors that occurred during the request
+                  console.error('from error: ', error);
+                });
+
+              console.log('this is from login page: ', account, password);
           }
         }}
       >
@@ -104,14 +114,34 @@ const ContentLogin = () => {
 
     <Text style={[styles.smallText, { alignSelf: 'center', marginBottom: 20 }]}>or Login with</Text>
     <View style={{ flexDirection: 'row', justifyContent: 'space-evenly' }}>
+      <Pressable
+      onPress={()=>{
+        console.log(userData)
+      }}
+      >
       <Image style={{ height: 50, width: 52 }} source={require('../../assets/icons/_Facebook.png')} />
-      <Image style={{ height: 50, width: 50 }} source={require('../../assets/icons/_Google.png')} />
+      </Pressable>
+
+      <Pressable
+      onPress={async ()=>{
+        try {
+          const userData = await AsyncStorage.getItem('userData');
+           userData != null ? JSON.parse(userData) : null;
+           console.log(userData)
+        } catch (e) {
+          // error reading value
+        }
+      }}
+      >
+         <Image style={{ height: 50, width: 50 }} source={require('../../assets/icons/_Google.png')} />
+      </Pressable>
+     
       <Image style={{ height: 50, width: 50 }} source={require('../../assets/icons/_Twitter.png')} />
     </View>
   </View>
 }
 
-function LoginHandler () {
+function LoginHandler() {
 
 }
 
@@ -121,10 +151,25 @@ const ContentSignup = () => {
   const [rePassword, setRePassword] = useState('');
 
   const [modalVisible, setModalVisible] = useState(false);
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
+
+  var myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+
+  var raw = JSON.stringify({
+    "account": account,
+    "password": password
+  });
+
+  var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
+  };
 
   return <View>
-    <Modal
+    {/* <Modal
       animationType="slide"
       transparent={true}
       visible={modalVisible}
@@ -179,7 +224,7 @@ const ContentSignup = () => {
       style={[styles.button, styles.buttonOpen]}
       onPress={() => setModalVisible(true)}>
       <Text style={styles.textStyle}>Show Modal</Text>
-    </Pressable>
+    </Pressable> */}
     <Text style={[styles.text, { marginTop: 20 }]}>Account:</Text>
     <TextInput
       style={styles.inputBox}
@@ -206,7 +251,31 @@ const ContentSignup = () => {
           color: 'white'
         }}
         style={{ width: '100%', borderRadius: 15 }}
-        onPress={() => { SignUpHandler(account, password, rePassword, dispatch) }}
+        onPress={() => {
+
+          fetch(`${serverAddress}/account/sign-up`, requestOptions)
+            .then(response => {
+              if (response.ok) {
+                // Request was successful (status code 200-299)
+                console.log(response);
+                return response.json(); // Parse response body as JSON
+              } else {
+                // Request failed (status code outside 200-299 range)
+                console.log('from respose: ', response);
+                throw new Error('Request failed with status ' + response.status);
+              }
+            })
+            .then(data => {
+              // Handle the response data
+              //dispatch(setUser(data));
+              console.log('from data: ', data);
+              // Additional logic based on the response data
+            })
+            .catch(error => {
+              // Handle any errors that occurred during the request
+              console.error('from error: ', error);
+            });
+        }}
       >
         <Text style={[styles.text, { textAlign: 'center', }]}>Sign up</Text>
       </Pressable>
@@ -216,51 +285,63 @@ const ContentSignup = () => {
 
 }
 
-function SignUpHandler(account, password, rePassword, dispatch) {
+// function SignUpHandler(account, password, rePassword, dispatch) {
 
-  var myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/json");
+// }
 
-  var raw = JSON.stringify({
-    "account": account,
-    "password": password
-  });
+// const getData = async () => {
+//   try {
+//     const jsonValue = await AsyncStorage.getItem('userData');
+//     return jsonValue != null ? JSON.parse(jsonValue) : null;
+//   } catch (e) {
+//     console.log(e);
+//   }
+// };
 
-  var requestOptions = {
-    method: 'POST',
-    headers: myHeaders,
-    body: raw,
-    redirect: 'follow'
+
+
+function LoginSignup() {
+const dispatch = useDispatch();
+const navigation = useNavigation();
+  const checkLoginState = async () => {
+    try {
+      const userData = await AsyncStorage.getItem('userData');
+      if (userData) {
+        // If user token exists, dispatch login success action with the token
+        console.log('alrady loging: ', userData);
+        dispatch(setUser(JSON.parse(userData)));
+        navigation.navigate('MainApp')
+      } else {
+        // If user token doesn't exist,
+        console.log('nothing yet')
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  fetch("http://192.168.10.102:9000/account/create-user", requestOptions)
-    .then(response => {
-      if (response.ok) {
-        // Request was successful (status code 200-299)
-        console.log(response);
-        return response.json(); // Parse response body as JSON
-      } else {
-        // Request failed (status code outside 200-299 range)
-        console.log('from respose: ', response);
-        throw new Error('Request failed with status ' + response.status);
-      }
-    })
-    .then(data => {
-      // Handle the response data
-      dispatch(setUser(data));
-      console.log('from data: ', data);
-      // Additional logic based on the response data
-    })
-    .catch(error => {
-      // Handle any errors that occurred during the request
-      console.error('from error: ', error);
-    });
-}
+  useEffect(() => {
+    checkLoginState();
+  }, []);
 
+  // try {
+  //   const jsonValue = (await AsyncStorage.getItem('userData')) != null ? JSON.parse(jsonValue) : null;
+  //   console.log('come on man: ',jsonValue);
+  // } catch (e) {
+  //   console.log(e);
+  // }
+  // const storage = getData();
+  // AsyncStorage.getItem('userData').then(()=>{
+  //   if(storage == null){
+  //   console.log('its null')
+  // }
+  // else{
+  //   console.log('itsnot null', storage)
+  // }
+  // })
+  // .catch((e)=>{console.log(e)})
+  
 
-
-
-function LoginSignup({ navigation }) {
 
   const [active, setActive] = useState(1);
   const handleLoginPress = () => {
@@ -269,8 +350,6 @@ function LoginSignup({ navigation }) {
   const handleSignupPress = () => {
     setActive(0);
   };
-
-
 
 
   return (

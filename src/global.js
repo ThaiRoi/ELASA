@@ -1,3 +1,3 @@
-const serverAddress = 'http://192.168.1.168:9000';
+const serverAddress = 'http://192.168.10.27:9000';
 
 export default serverAddress;

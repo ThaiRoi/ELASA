@@ -134,6 +134,7 @@ function WatchVideo({route}) {
 
   function runSub() {
     interval = setInterval(async () => {
+      if (playerRef.current === null) return;
       const elapsed_sec = Math.round(await playerRef.current.getCurrentTime()); // this is a promise. dont forget to await
     //console.log("ibterval");
       for (let i=0;i<subtitleData.length -1 ;i++){
