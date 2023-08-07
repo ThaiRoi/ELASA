@@ -93,25 +93,25 @@ function WatchVideo({route}) {
   };
   const getSubtitle = () => {
     // fetch(`${serverAddress}/video/get-subtitle`, requestSubtitleOptions)
-    fetch(`${serverAddress}/video/get-subtitle`, requestSubtitleOptions)
+    fetch(`${serverAddress}/video/watch-video`, requestSubtitleOptions)
 
       .then(response => {
         if (response.ok) {
           // Request was successful (status code 200-299)
-          //console.log("from response: ",response);
+          // console.log("from response: ",response);
           return response.json();
           // Parse response body as JSON
         } else {
           // Request failed (status code outside 200-299 range)
-          //console.log('from respose: ', response);
+          console.log('from respose: ', response);
           throw new Error('Request failed with status ' + response.status);
         }
       })
       .then(data => {
         // Handle the response data
         //console.log('from data: ', data.data.thai.caption[0]["-start"]);
-       // console.log("frtom getSubtitle: ", data.data.captions);
-        setSubtitleData(data.data.captions);
+      // console.log("dât frtom getSubtitle: ", data.data.caption);
+        setSubtitleData(data.data.caption);
         setLoadingSubtitle(false);
         //console.log(data.data.thai.caption);
         // Additional logic based on the response data

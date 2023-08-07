@@ -16,6 +16,8 @@ import CreateMemo from './screens/CreateMemo';
 import DailyTest from './screens/DailyTest';
 import SearchMemo from './screens/SearchMemo';
 import SeeMemo from './screens/SeeMemo';
+import History from './screens/History';
+import VideoSearch from './screens/VideoSearch';
 
 import LottieSplashScreen from 'react-native-lottie-splash-screen';
 
@@ -87,6 +89,14 @@ function App() {
            <Stack.Screen
         name = 'SeeMemo'
         component={SeeMemo}
+        />
+         <Stack.Screen
+        name = 'History'
+        component={History}
+        />
+        <Stack.Screen
+        name = 'VideoSearch'
+        component={VideoSearch}
         />
   
       </Stack.Navigator>

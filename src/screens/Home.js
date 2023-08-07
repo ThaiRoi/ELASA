@@ -19,6 +19,7 @@ import { userReturn } from "../store/store";
 
 function Home() {
     const userData = useSelector(userReturn);
+    const [keyword, setKeyword] = useState('');
     const [page, setPage] = useState(1);
     const navigation = useNavigation();
     const [recommendData, setRecommendData] = useState([]);
@@ -105,12 +106,14 @@ function Home() {
                             });
 
                         }}>
-                        <View style={{ height: 200, width: 260, backgroundColor: '#234B76', margin: 10, borderRadius: 10 }}>
+                        <View style={{ height: 215, width: 260, backgroundColor: '#234B76', margin: 10, borderRadius: 10 }}>
                             <Image
                                 style={{ height: 140, width: 240, alignSelf: 'center', marginTop: 10, borderTopLeftRadius: 8, borderTopRightRadius: 8 }}
                                 source={{ uri: item.thumbnailurl.maxres.url }}
                             />
                             <Text style={[styles.videoTitle]} numberOfLines={2}>{item.title}</Text>
+                            <Text style={[styles.normalText,{fontSize: 12, alignSelf: 'flex-end', marginHorizontal: 20}]} numberOfLines={1}>{item.channelname}</Text>
+
                         </View>
                     </Pressable>
                     }
@@ -162,6 +165,7 @@ function Home() {
         )
     }
 
+
     return (
         <View style={{ flex: 1, backgroundColor: "#153C43" }}>
             <Pressable
@@ -181,7 +185,10 @@ function Home() {
                  
                         style={{ width: '90%', backgroundColor: '#F1E4CA', borderTopRightRadius: 50, borderBottomRightRadius: 50 }}
                         placeholder="video search"
-                        
+                        onChangeText={(v)=>{setKeyword(v)}}
+                        onSubmitEditing={()=>{
+                            navigation.navigate('VideoSearch', {keyword: keyword})
+                        }}
                     />
                 </View>
                 {/* <View style={{ marginHorizontal: 15 }}>

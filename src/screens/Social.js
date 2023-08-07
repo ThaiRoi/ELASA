@@ -7,7 +7,8 @@ import {
     Pressable,
     TouchableWithoutFeedback,
     Keyboard,
-    Image
+    Image,
+    FlatList
 } from 'react-native';
 
 function Social () {
@@ -32,7 +33,10 @@ function Social () {
                 <Text style={styles.normalText}>likes</Text>
                 <Text style={styles.normalText}>comments</Text>
             </View> */}
-             <View style={{ height: 400, width: 320, backgroundColor: '#234B76', margin: 20, marginBottom: 50 }}>
+
+            <FlatList
+            data={DATA}
+            renderItem={(item)=> <View style={{ height: 400, width: 320, backgroundColor: '#234B76', margin: 20, marginBottom: 50 }}>
                 <View style={{ margin: 5, flexDirection: 'row', justifyContent: 'center' }}>
                     <View style={{ flex: 1 }}></View>
                     <View style={{ flex: 6 }}>
@@ -59,7 +63,9 @@ function Social () {
                 </View>
 
 
-            </View>
+            </View>}
+            />
+             
 
         </View>
     )
@@ -103,3 +109,88 @@ const styles = StyleSheet.create({
     },
 })
 export default Social;
+
+
+const DATA = [
+    {
+        title: 'First Item asfd asdf a qrtj erituh adsfiuh idsufhoa aihfaoi adifhu aoifdh afdh',
+    },
+    {
+        title: 'Second Item',
+    },
+    {
+        title: 'Third Item',
+    },
+    {
+        title: 'First Item',
+    },
+    {
+        title: 'Second Item',
+    },
+    {
+        title: 'Third Item',
+    },
+    {
+        title: 'First Item',
+    },
+    {
+        title: 'Second Item',
+    },
+    {
+        title: 'Third Item',
+    },
+    {
+        title: 'First Item',
+    },
+    {
+        title: 'Second Item',
+    },
+    {
+        title: 'Third Item',
+    },
+    {
+        title: 'First Item',
+    },
+    {
+        title: 'Second Item',
+    },
+    {
+        title: 'Third Item',
+    },
+    {
+        title: 'First Item',
+    },
+    {
+        title: 'Second Item',
+    },
+    {
+        title: 'Third Item',
+    },
+    {
+        title: 'First Item',
+    },
+    {
+        title: 'Second Item',
+    },
+    {
+        title: 'Third Item',
+    },
+    {
+        title: 'First Item',
+    },
+    {
+        title: 'Second Item',
+    },
+    {
+        title: 'Third Item',
+    },
+    {
+        title: 'First Item',
+    },
+    {
+        title: 'Second Item',
+    },
+    {
+        title: 'Third Item',
+    },
+];
