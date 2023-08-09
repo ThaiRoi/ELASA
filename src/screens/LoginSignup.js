@@ -310,7 +310,7 @@ const navigation = useNavigation();
         // If user token exists, dispatch login success action with the token
         console.log('alrady loging: ', userData);
         dispatch(setUser(JSON.parse(userData)));
-        navigation.navigate('MainApp')
+        navigation.replace('MainApp')
       } else {
         // If user token doesn't exist,
         console.log('nothing yet')

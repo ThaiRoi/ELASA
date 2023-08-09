@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useRef} from "react";
 import {
     View,
     Text,
@@ -9,7 +9,8 @@ import {
     Keyboard,
     Image,
     FlatList,
-    ActivityIndicator
+    ActivityIndicator,
+    Alert
 } from 'react-native';
 import { withTiming } from "react-native-reanimated";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -27,6 +28,7 @@ const [videoFound, setVideoFound] = useState([]);
 const [searched, setSearched] = useState(false);
 const [wordToFind, setWordToFind] = useState('');
 const [loading, setLoading] = useState(false);
+const inputRef = useRef();
 useEffect(() =>{
     return setSearched(false);
 },[])
@@ -37,6 +39,7 @@ useEffect(() =>{
             setSearched(false);
             return;
         }
+        Keyboard.dismiss();
          console.log('pressed')
         setLoading(true);
 
@@ -55,7 +58,17 @@ useEffect(() =>{
              console.log("video found: ", videoFound);
           })
           .catch(function (error) {
-            console.log(error);
+            console.log(error.response);
+            setLoading(false);
+            setSearched(false);
+            Alert.alert(error.response.data.error, error.response.data.message, [
+                // {
+                //   text: 'Cancel',
+                //   onPress: () => console.log('Cancel Pressed'),
+                //   style: 'cancel',
+                // },
+                {text: 'OK', onPress: () => console.log('OK Pressed')},
+              ]);
           });
         
         // setSearched(true);
@@ -74,19 +87,32 @@ useEffect(() =>{
                             setWordToFind(v);
                             // console.log(wordToFind);
                         }}  
+                        ref={inputRef}
                     />
                 </View>
                
             </View>
-            <View></View>
+            <View style ={{flexDirection:'row'}}>
             <Pressable
             onPress={()=>{searchHandler()}}
             >
-                    <View style = {{height: 50, width: 200, backgroundColor: 'green', alignSelf: 'center', margin: 20, justifyContent: 'center', borderRadius: 10}}>
+                    <View style = {{height: 50, width: 220, backgroundColor: 'green', alignSelf: 'center', margin: 20, justifyContent: 'center', borderRadius: 10}}>
                         <Text style = {[styles.normalText, {fontSize: 15, textAlign: 'center', color: '#F1E4CA'}]}>Search</Text>
                     </View>
                 </Pressable>
-
+                <Pressable
+                        onPress={()=>{
+                            inputRef.current.clear();
+                            setWordToFind('');
+                            setSearched(false);
+                            setLoading(false);
+                        }}
+            >
+                    <View style = {{height: 50, width: 80, backgroundColor: 'green', alignSelf: 'center', marginVertical: 20, justifyContent: 'center', borderRadius: 10}}>
+                        <Text style = {[styles.normalText, {fontSize: 15, textAlign: 'center', color: '#F1E4CA'}]}>Reset</Text>
+                    </View>
+                </Pressable>
+            </View>
             {!searched ? 
             <View style= {{marginHorizontal: 20}}>
                 <ActivityIndicator
@@ -94,7 +120,7 @@ useEffect(() =>{
                 animating = {loading}
                 style = {{margin: 20}}
            />
-                <Text style = {[styles.normalText, {textAlign: 'center'}]}>Searching for specific words and phrases in a video allows you to have exposure to the targeted words in their natural context, enabling deliberate acquisition practice.</Text>
+                <Text style = {[styles.normalText, {textAlign: 'center'}]}>"Searching for specific words and phrases in a video allows you to have exposure to the targeted words in their natural context, enabling deliberate acquisition practice."</Text>
             
                 <Image style={{height: 200, width: 200, alignSelf: 'flex-end', margin: 20}} source={require('../../assets/icons/tighnariTeaching.png')} />
 

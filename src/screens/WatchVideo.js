@@ -8,7 +8,8 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   ScrollView,
-  FlatList
+  FlatList,
+  Modal
 } from 'react-native';
 import { enableLayoutAnimations, getRelativeCoords } from "react-native-reanimated";
 import YoutubePlayer from "react-native-youtube-iframe";
@@ -16,11 +17,15 @@ import { useSelector } from "react-redux";
 import { userReturn } from "../store/store";
 import { useNavigation } from "@react-navigation/native";
 import serverAddress from "../global";
+import Slider from '@react-native-community/slider';
 
- let interval, timeout;
 
-function WatchVideo({route}) { 
-  const {videoid, title} = route.params;
+let interval, timeout;
+
+function WatchVideo({ route }) {
+  console.log('rerender');
+  const { videoid, title } = route.params;
+  let rated = false;
   //console.log("passing video id between sscreens: ",videoid, title);
   //  const userInfo = useSelector(userReturn);
   // console.log("userinfo from info page: ",userInfo);
@@ -29,11 +34,15 @@ function WatchVideo({route}) {
   // const [loadingVideo, setLoadingVideo] = useState(true);
   const [loadingSubtitle, setLoadingSubtitle] = useState(true);
   const [selectedIndex, setSelectedIndex] = useState(0);
-// var isScrolling = false;
-// const [isScrolling, setScrolling] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [event, setEvent] = useState({});
+  const [playing, setPlaying] = useState(true);
+  const [comprehension, setComprehension] = useState(0);
+  // var isScrolling = false;
+  // const [isScrolling, setScrolling] = useState(false);
   var trueIndex = 0;
   // const [elapsed, setElapsed] = useState(0);
- 
+// console.log("playing: ", playing);
   const playerRef = useRef();
   const flatlistRef = useRef();
   const navigation = useNavigation();
@@ -110,7 +119,7 @@ function WatchVideo({route}) {
       .then(data => {
         // Handle the response data
         //console.log('from data: ', data.data.thai.caption[0]["-start"]);
-      // console.log("dât frtom getSubtitle: ", data.data.caption);
+        // console.log("dât frtom getSubtitle: ", data.data.caption);
         setSubtitleData(data.data.caption);
         setLoadingSubtitle(false);
         //console.log(data.data.thai.caption);
@@ -127,6 +136,17 @@ function WatchVideo({route}) {
   useEffect(() => {
     // getVideo();
     getSubtitle();
+    setTimeout(() => {
+      navigation.addListener('beforeRemove', (e) => {
+        console.log(e.data.action);
+        e.preventDefault();
+        setModalVisible(true);
+        setEvent(e.data.action);
+
+
+      })
+    }, 11111)
+
     // console.log(subtitleData)
   }, []);
 
@@ -136,19 +156,19 @@ function WatchVideo({route}) {
     interval = setInterval(async () => {
       if (playerRef.current === null) return;
       const elapsed_sec = Math.round(await playerRef.current.getCurrentTime()); // this is a promise. dont forget to await
-    //console.log("ibterval");
-      for (let i=0;i<subtitleData.length -1 ;i++){
-        if ((elapsed_sec >= Number(subtitleData[i].start)) && (elapsed_sec < Number(subtitleData[i+1].start))) {
-          if(trueIndex != i) {
+      //console.log("ibterval");
+      for (let i = 0; i < subtitleData.length - 1; i++) {
+        if ((elapsed_sec >= Number(subtitleData[i].start)) && (elapsed_sec < Number(subtitleData[i + 1].start))) {
+          if (trueIndex != i) {
             trueIndex = i;
             setSelectedIndex(i);
             // if(!isScrolling){
-              flatlistRef.current.scrollToIndex({ index: i, animated: true, viewPosition: 0.08 });
+            flatlistRef.current.scrollToIndex({ index: i, animated: true, viewPosition: 0.08 });
             // } 
             continue;
           }
         }
-      } 
+      }
     }, 500);
   }
   // console.log(subtitleData.data.thai.caption);
@@ -188,7 +208,7 @@ function WatchVideo({route}) {
       //   //       // trueIndex = index;
       //   //        flatlistRef.current.scrollToIndex({ index: index, animated: true, viewPosition: 0.12 });
       //   //     // }
-              
+
       //   //    //console.log("current time aka elapsed: ", elapsed)
       //   //     //console.log("from setInterval", Math.round(current["-start"]), "selected: ", selectedIndex);
       //   //   };
@@ -225,41 +245,139 @@ function WatchVideo({route}) {
     )
 
   // if (Object.keys(videoData).length == 0 || Object.keys(subtitleData).length == 0) 
-  if (Object.keys(subtitleData).length == 0) 
-  return (
-    <View style={{ flex: 1, backgroundColor: 'pink' }}>
-      <Text>something went wrong, please try again</Text>
-    </View>
-  )
+  if (Object.keys(subtitleData).length == 0)
+    return (
+      <View style={{ flex: 1, backgroundColor: 'pink' }}>
+        <Text>something went wrong, please try again</Text>
+      </View>
+    )
   return (
     <View style={{ flex: 1, backgroundColor: '#407950' }}>
+
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onShow={()=>{ 
+          clearInterval(interval);
+                        setPlaying(false)
+                    }
+                }
+        // onDismiss={()=>{
+          
+        // }}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+          if (interval) clearInterval(interval);
+           runSub();
+          setPlaying(true);
+        }}>
+        
+        <View 
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: 'rgba(52, 52, 52, 0.4)'
+  
+        }}>
+          <View 
+          style={{
+            backgroundColor: '#407950',
+            borderRadius: 20,
+            padding: 20,
+            height: 600,
+            width: '90%',
+            alignItems: 'center',
+            shadowColor: 'white',
+            shadowOffset: {
+              width: 4,
+              height: 8,
+            },
+            shadowOpacity: 0,
+            shadowRadius: 10,
+            elevation: 9,
+          }}>
+            {/* <Text style={styles.modalText}>Hello World!</Text>
+           
+             */}
+            <Text style = {[styles.titleText, {color: '#F1E4CA', fontSize: 20, textAlign:"center"}]}>RATE YOUR LEVEL OF COMPREHENSION</Text>
+            <Text style = {[styles.titleText, {color: '#F1E4CA', fontSize: 15, textAlign:"center", margin: 30, marginBottom: 30}]}>How much did you understand this video?</Text>
+            <Text style = {[styles.titleText, {color: '#F1E4CA', fontSize: 15, textAlign:"center"}]}>About {Math.floor(comprehension)}%</Text>
+            <Slider
+                style={{width: 270, height: 40, alignSelf: 'center'}}
+                minimumValue={0}
+                maximumValue={100}
+                minimumTrackTintColor="#FFFFFF"
+                maximumTrackTintColor="#000000"
+                onValueChange={(v)=>{setComprehension(v)}}
+                />
+                <Pressable
+              style={[styles.modalButton,{marginBottom: 60}]}
+              android_ripple={{color:'white'}}
+              onPress={() => { }}>
+              <Text style={[styles.titleText,{color: 'yellow', fontSize: 15}]}>Submit</Text>
+            </Pressable>
+                 <Pressable
+              style={styles.modalButton}
+              android_ripple={{color:'white'}}
+              
+              onPress={() => {
+                setModalVisible(!modalVisible)
+                if (timeout) clearTimeout(timeout);
+                timeout =  runSub();
+                setPlaying(true);
+              }}>
+              <Text style={[styles.titleText,{color: '#F1E4CA', fontSize: 15}]}>Go back to video</Text>
+            </Pressable>
+                <Pressable
+              style={styles.modalButton}
+              android_ripple={{color:'white'}}
+
+              onPress={() => navigation.dispatch(event)}>
+              <Text style={[styles.titleText,{color: '#873a3a', fontSize: 13}]}>Skip</Text>
+            </Pressable>
+              <Text style={[styles.titleText,{color: '#873a3a', fontSize: 13}]}>If you skip, this video won't be recorded in your watch history and the statistic will not be saved</Text>
+
+          </View>
+        </View>
+      </Modal>
       <YoutubePlayer
         height={204}
-        play={true}
+        play={playing}
         videoId={videoid}
         ref={playerRef}
+        onChangeState={(s)=>{
+           console.log("player state",s);
+          // if(s=="playing"){ 
+          //   setPlaying(true);
+          // }
+          // if(s=="paused"){
+          //   setPlaying(false);
+          // }
+        }}
       />
 
-{/* {(subtitleData == null)} */}
+      {/* {(subtitleData == null)} */}
       <View style={{ backgroundColor: '#407950', flex: 1 }}>
         <FlatList
           ref={flatlistRef}
           data={subtitleData}
-          onScrollToIndexFailed={()=>{}}
+          onScrollToIndexFailed={() => { }}
           onScrollBeginDrag={() => {
-            
+
             clearInterval(interval);
           }}
           onScrollEndDrag={() => {
-              if(timeout) clearTimeout(timeout);
-              timeout = setTimeout(()=> {runSub();}, 2000);
-            }
+            if (timeout) clearTimeout(timeout);
+            timeout = setTimeout(() => { runSub(); }, 2000);
+          }
           }
           renderItem={({ item, index }) => {
             const backgroundColor = index === selectedIndex ? '#234B76' : '#153C43';
             const color = index === selectedIndex ? '#F1E4CA' : 'gray';
             const time = Math.floor(Number(item.start));
-             //console.log('index be like: ',index);
+            //console.log('index be like: ',index);
             //   console.log('selected index: ' ,selectedIndex);
             return (
               <Pressable
@@ -282,32 +400,32 @@ function WatchVideo({route}) {
         />
       </View>
       <View style={{ height: 50, flexDirection: 'row' }}>
-        <View style={{ flex: 2,}}>
+        <View style={{ flex: 2, }}>
           <Pressable
-            onPress={() => {navigation.goBack()}}
+            onPress={() => { navigation.goBack() }}
             android_ripple={{ color: 'white' }}
-      
+
           >
             <Text style={{ color: '#5BB467', fontFamily: 'genshin', fontSize: 30, textAlign: 'center' }}>{'<'}</Text>
           </Pressable>
         </View>
-        
-          <View style = {{flex: 8}}>
-        <Pressable
-          onPress={() => { }}
-          android_ripple={{ color: 'white' }}>
-          <Text style={[styles.titleText, ]}>{title}</Text>
-        </Pressable>
+
+        <View style={{ flex: 8 }}>
+          <Pressable
+            onPress={() => { }}
+            android_ripple={{ color: 'white' }}>
+            <Text style={[styles.titleText,]}>{title}</Text>
+          </Pressable>
         </View>
 
-        <View style = {{flex: 2}}>
-        <Pressable
-          onPress={() => { }}
-          android_ripple={{ color: 'white' }}>
-            <View style = {{height: 50, justifyContent: 'center', alignItems: 'center'}}>
-          <Text style={{ color: '#5BB467', textAlign: "left",}}>save</Text>
+        <View style={{ flex: 2 }}>
+          <Pressable
+            onPress={() => { }}
+            android_ripple={{ color: 'white' }}>
+            <View style={{ height: 50, justifyContent: 'center', alignItems: 'center' }}>
+              <Text style={{ color: '#5BB467', textAlign: "left", }}>save</Text>
             </View>
-        </Pressable>
+          </Pressable>
         </View>
 
       </View>
@@ -325,6 +443,18 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     marginHorizontal: 10,
     marginBottom: 5
+  },
+  modalButton:{
+    borderRadius: 2,
+    height: 50,
+    justifyContent:'center',
+    alignItems:'center',
+    paddingTop: 5,
+    elevation: 2,
+    backgroundColor:'#5BB467',
+    borderRadius: 10,
+    margin: 10,
+    width: 270
   }
 })
 

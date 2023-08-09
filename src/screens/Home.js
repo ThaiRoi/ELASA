@@ -8,6 +8,7 @@ import {
     FlatList,
     ScrollView,
     Pressable,
+    Alert
 
 } from 'react-native';
 import { useNavigation } from "@react-navigation/native";
@@ -21,6 +22,7 @@ function Home() {
     const userData = useSelector(userReturn);
     const [keyword, setKeyword] = useState('');
     const [page, setPage] = useState(1);
+    var allow = false;
     const navigation = useNavigation();
     const [recommendData, setRecommendData] = useState([]);
     function getRecommendation() {
@@ -36,10 +38,21 @@ function Home() {
             });
     }
 
-    useEffect(
-        getRecommendation
+    useEffect(() => {
+        getRecommendation();
 
-        , [])
+
+    }, [])
+
+    // useEffect(() => {
+    //     navigation.addListener('beforeRemove', (e) => {
+    //         if (userData == null) return;
+    //         e.preventDefault();
+            
+    //     })
+    // }, [])
+
+    console.log(allow)
 
     const OriginalContent = () => {
         return (
@@ -112,7 +125,7 @@ function Home() {
                                 source={{ uri: item.thumbnailurl.maxres.url }}
                             />
                             <Text style={[styles.videoTitle]} numberOfLines={2}>{item.title}</Text>
-                            <Text style={[styles.normalText,{fontSize: 12, alignSelf: 'flex-end', marginHorizontal: 20}]} numberOfLines={1}>{item.channelname}</Text>
+                            <Text style={[styles.normalText, { fontSize: 12, alignSelf: 'flex-end', marginHorizontal: 20 }]} numberOfLines={1}>{item.channelname}</Text>
 
                         </View>
                     </Pressable>
@@ -150,17 +163,17 @@ function Home() {
                     <Text></Text>
                     <Text>Statictic</Text>
                     <Text>Statictic</Text>
-                    
+
                     <Pressable
-                        onPress={() => {navigation.navigate('Statistic')}}
-                        style = {{alignSelf: 'center', marginTop: 300}}
+                        onPress={() => { navigation.navigate('Statistic') }}
+                        style={{ alignSelf: 'center', marginTop: 300 }}
                     >
                         <View style={{ width: 200, height: 50, backgroundColor: 'green', borderRadius: 10, alignItems: 'center', justifyContent: 'center' }}>
-                            <Text style = {styles.normalText}>See more:</Text>
+                            <Text style={styles.normalText}>See more:</Text>
                         </View>
                     </Pressable>
-                    </View>
-                
+                </View>
+
             </ScrollView>
         )
     }
@@ -169,25 +182,25 @@ function Home() {
     return (
         <View style={{ flex: 1, backgroundColor: "#153C43" }}>
             <Pressable
-            onPress={() => {
-                console.log(userData);
-            }}
+                onPress={() => {
+                    console.log(userData);
+                }}
             >
-            <Text style = {[styles.title, {marginTop: 15}]}>HOME</Text>
+                <Text style={[styles.title, { marginTop: 15 }]}>HOME</Text>
             </Pressable>
             <View style={{ height: 60, width: "100%", flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingTop: 15 }}>
                 {/* <View style={{ height: 50, justifyContent: 'center' }}>
                     <Image style={{ height: 45, width: 41, margin: 5 }} source={require('../../assets/icons/user.png')} />
                 </View> */}
-                <View style={{ width: "85%", flexDirection: 'row', alignSelf: 'center', alignContent: 'center', marginHorizontal: 20}} >
+                <View style={{ width: "85%", flexDirection: 'row', alignSelf: 'center', alignContent: 'center', marginHorizontal: 20 }} >
                     <View style={{ width: 'auto', justifyContent: 'center', paddingLeft: 8, borderTopLeftRadius: 50, borderBottomLeftRadius: 50, backgroundColor: '#F1E4CA', paddingRight: 5 }}><FontAwesome name="search" size={25} /></View>
-                    <TextInput 
-                 
+                    <TextInput
+
                         style={{ width: '90%', backgroundColor: '#F1E4CA', borderTopRightRadius: 50, borderBottomRightRadius: 50 }}
                         placeholder="video search"
-                        onChangeText={(v)=>{setKeyword(v)}}
-                        onSubmitEditing={()=>{
-                            navigation.navigate('VideoSearch', {keyword: keyword})
+                        onChangeText={(v) => { setKeyword(v) }}
+                        onSubmitEditing={() => {
+                            navigation.navigate('VideoSearch', { keyword: keyword })
                         }}
                     />
                 </View>

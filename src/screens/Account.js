@@ -6,20 +6,34 @@ import {
     StyleSheet,
     Pressable,
     TouchableWithoutFeedback,
-    Keyboard
+    Keyboard,
+    ScrollView
 } from 'react-native';
 import { useNavigation } from "@react-navigation/native";
 import { clearUser } from "../user/userSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch } from "react-redux";
+import Slider from '@react-native-community/slider';
+
+
 function Account() {
     const navigation = useNavigation();
     const dispatch = useDispatch();
+    const [value, setValue] = useState(1);
+    
 
+ 
     return (
-        <View style={{ flex: 1, backgroundColor: '#153C43' }}>
-            <Text style={styles.title}>Account</Text>
-
+        <ScrollView style={{ flex: 1, backgroundColor: '#153C43' }}>
+            <Text style={styles.title}>Account {Math.floor(value)}</Text>
+                <Slider
+                style={{width: 200, height: 40, alignSelf: 'center'}}
+                minimumValue={0}
+                maximumValue={100}
+                minimumTrackTintColor="#FFFFFF"
+                maximumTrackTintColor="#000000"
+                onValueChange={(v)=>{setValue(v)}}
+                />
             <Pressable
                 onPress={() => { }}
                 android_ripple={{ color: '#E5D5A4' }}
@@ -109,7 +123,7 @@ function Account() {
                     } catch (e) {
                         console.log(e);
                     }
-
+                    navigation.dispatch
                     console.log('Done.')
                 }}
                 style={[styles.menuBox, { shadowColor: 'red' }]}
@@ -123,7 +137,7 @@ function Account() {
 
 
 
-        </View>
+        </ScrollView>
     )
 }
 const styles = StyleSheet.create({
