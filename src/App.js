@@ -20,6 +20,7 @@ import History from './screens/History';
 import VideoSearch from './screens/VideoSearch';
 
 import LottieSplashScreen from 'react-native-lottie-splash-screen';
+import Toast from 'react-native-toast-message';
 
 
 import { NavigationContainer } from '@react-navigation/native';
@@ -101,6 +102,7 @@ function App() {
   
       </Stack.Navigator>
     </NavigationContainer>
+    <Toast />
     </Provider>
   );
 }

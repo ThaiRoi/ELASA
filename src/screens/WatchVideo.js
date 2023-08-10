@@ -18,11 +18,18 @@ import { userReturn } from "../store/store";
 import { useNavigation } from "@react-navigation/native";
 import serverAddress from "../global";
 import Slider from '@react-native-community/slider';
+import Toast from 'react-native-toast-message';
+const axios = require('axios').default;
+
 
 
 let interval, timeout;
+var watchTime = 0;
+var pauseTime = Date.now() ;
+console.log('this is out side of the function to see if rerendering is gonna run the code out here')
 
 function WatchVideo({ route }) {
+  const userData = useSelector(userReturn);
   console.log('rerender');
   const { videoid, title } = route.params;
   let rated = false;
@@ -142,7 +149,7 @@ function WatchVideo({ route }) {
         e.preventDefault();
         setModalVisible(true);
         setEvent(e.data.action);
-
+        
 
       })
     }, 11111)
@@ -153,6 +160,7 @@ function WatchVideo({ route }) {
 
 
   function runSub() {
+    if(interval) clearInterval(interval);
     interval = setInterval(async () => {
       if (playerRef.current === null) return;
       const elapsed_sec = Math.round(await playerRef.current.getCurrentTime()); // this is a promise. dont forget to await
@@ -160,6 +168,7 @@ function WatchVideo({ route }) {
       for (let i = 0; i < subtitleData.length - 1; i++) {
         if ((elapsed_sec >= Number(subtitleData[i].start)) && (elapsed_sec < Number(subtitleData[i + 1].start))) {
           if (trueIndex != i) {
+            //console.log(subtitleData[i-1].text)
             trueIndex = i;
             setSelectedIndex(i);
             // if(!isScrolling){
@@ -238,7 +247,7 @@ function WatchVideo({ route }) {
   if (loadingSubtitle)
     return (
       <View>
-        <Text>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaafuck</Text>
+        <Text>yep duck</Text>
         <Text>i mean uh... loading</Text>
 
       </View>
@@ -258,10 +267,11 @@ function WatchVideo({ route }) {
         animationType="slide"
         transparent={true}
         visible={modalVisible}
+        hardwareAccelerated={true}
         onShow={()=>{ 
           clearInterval(interval);
-                        setPlaying(false)
-                    }
+          setPlaying(false)
+          }
                 }
         // onDismiss={()=>{
           
@@ -315,7 +325,43 @@ function WatchVideo({ route }) {
                 <Pressable
               style={[styles.modalButton,{marginBottom: 60}]}
               android_ripple={{color:'white'}}
-              onPress={() => { }}>
+              onPress={() => { 
+                //call create history api
+                axios.post(`${serverAddress}/video/create-history`, {
+                  userid : userData.userId,
+                  videoid: videoid,
+                  comprehensionlevel: Math.floor(comprehension),
+                  watchtime: watchTime
+                })
+                .then((response)=>{
+                  // console.log(response);
+                  Toast.show({
+                    type: 'success',
+                    text1: "Let's go!!!",
+                    text2: 'Successfully recorded your activities👋',
+                    visibilityTime: 5000
+                  });
+                  //  setTimeout(()=>{
+                    navigation.dispatch(event);
+                  //  }, 1000)
+                })
+                .catch((e)=>{
+                  Toast.show({
+                    type: 'error',
+                    text1: "uh oh",
+                    text2: 'something went wrong omegalul',
+                    visibilityTime: 5000
+                  });
+                })
+
+                console.log({
+                  userid : userData.userId,
+                  videoid: videoid,
+                  comprehensionlevel: Math.floor(comprehension),
+                  watchtime: watchTime
+                })
+               
+              }}>
               <Text style={[styles.titleText,{color: 'yellow', fontSize: 15}]}>Submit</Text>
             </Pressable>
                  <Pressable
@@ -327,6 +373,7 @@ function WatchVideo({ route }) {
                 if (timeout) clearTimeout(timeout);
                 timeout =  runSub();
                 setPlaying(true);
+                console.log("watch time is now...",watchTime);
               }}>
               <Text style={[styles.titleText,{color: '#F1E4CA', fontSize: 15}]}>Go back to video</Text>
             </Pressable>
@@ -349,12 +396,25 @@ function WatchVideo({ route }) {
         ref={playerRef}
         onChangeState={(s)=>{
            console.log("player state",s);
-          // if(s=="playing"){ 
-          //   setPlaying(true);
-          // }
-          // if(s=="paused"){
-          //   setPlaying(false);
-          // }
+           if(s=="unstarted"){
+            console.log('set the values once when the screen load')
+            watchTime = 0;
+            pauseTime = Date.now() ;
+           }
+          if(s=="playing"){ 
+            // setPlaying(true);
+            console.log("yep, it's playing alright")
+            pauseTime = Date.now();
+            console.log("pauseTime is set to: ", pauseTime)
+            console.log('watchtime is now set to: ', watchTime);
+          }
+          if(s=="paused"||s=="ended"){
+            // setPlaying(false);
+            console.log("yep, it's paused alright")
+            watchTime = (Date.now() - pauseTime) + watchTime;
+            // pauseTime = Date.now();
+            console.log('watchtime is now set to: ', watchTime);
+          }
         }}
       />
 
