@@ -17,13 +17,18 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import serverAddress from "../global";
 import { useNavigation } from "@react-navigation/native";
 import Camera from "./Camera";
+import { useSelector } from "react-redux";
+import { userReturn } from "../store/store";
 
 const axios = require('axios').default;
 
 
 
 function SubSearch () {
+  const userData = useSelector(userReturn);
+
 const navigation = useNavigation();
+const[historyFound, setHistoryFound]= useState([]);
 const [videoFound, setVideoFound] = useState([]);
 const [searched, setSearched] = useState(false);
 const [wordToFind, setWordToFind] = useState('');
@@ -46,16 +51,19 @@ useEffect(() =>{
         console.log(wordToFind);
         setVideoFound([]);
         axios.post(`${serverAddress}/video/search-subtitle`, {
+            "userId": userData.userId,
             "wordToFind": wordToFind
           })
           .then(function (response) {
-            setVideoFound(response.data.data.finalRes);
+            // console.log("this is response",response.data.data.history);
+            setVideoFound(response.data.data.other);
+            setHistoryFound(response.data.data.history);
             //console.log('console log response search subtitle api: ',response.data.data.finalRes.thumbnailurl.maxres.url);
           })
           .then(()=>{
             setLoading(false);
              setSearched(true);
-             console.log("video found: ", videoFound);
+            //  console.log("video found: ", videoFound);
           })
           .catch(function (error) {
             console.log(error.response);
@@ -79,10 +87,11 @@ useEffect(() =>{
             <Text style = {[styles.title, {marginTop: 15}]}>Search by Subtitles</Text>
             <View style={{ height: 60, width: "100%", flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingTop: 15 }}>
                 <View style={{ width: "90%", flexDirection: 'row' }} >
-                    <View style={{ width: 'auto', justifyContent: 'center', paddingLeft: 8, borderTopLeftRadius: 50, borderBottomLeftRadius: 50, backgroundColor: '#F1E4CA', paddingRight: 5 }}><FontAwesome name="search" size={25} /></View>
+                    <View style={{ width: 'auto', justifyContent: 'center', paddingLeft: 8, borderTopLeftRadius: 50, borderBottomLeftRadius: 50, backgroundColor: '#F1E4CA', paddingRight: 5 }}><FontAwesome name="search" size={25} color="gray"/></View>
                     <TextInput 
-                        style={{ width: '90%', backgroundColor: '#F1E4CA', borderTopRightRadius: 50, borderBottomRightRadius: 50 }}
+                        style={{ width: '90%', backgroundColor: '#F1E4CA', borderTopRightRadius: 50, borderBottomRightRadius: 50, color: "black" }}
                         placeholder="subtitle search"
+                        placeholderTextColor="gray"
                         onChangeText={(v)=> {
                             setWordToFind(v);
                             // console.log(wordToFind);
@@ -146,7 +155,75 @@ useEffect(() =>{
 
                 <FlatList
                     data={videoFound}
-                    renderItem={({ item, index }) => <Pressable
+                    ListHeaderComponent={<View>
+                        <Text style = {[styles.title,{textAlign: 'left', color: 'white', marginLeft: 20}]}>From your watch history:</Text>
+                    <FlatList
+                        data={historyFound}
+                        renderItem={({ item }) => {
+                            let thumbnailurl ='https://yaviet.com/wp-content/uploads/2018/08/loi-404-not-found-300x225.jpg';
+                            if(item.thumbnailurl){
+                                if(item.thumbnailurl.maxres){
+                                    thumbnailurl =item.thumbnailurl.maxres.url;
+                                }
+                                else if (item.thumbnailurl.standard){
+                                    thumbnailurl =item.thumbnailurl.standard.url;
+                                } 
+                                else if (item.thumbnailurl.high){
+                                    thumbnailurl =item.thumbnailurl.high.url;
+                                }
+                                else if (item.thumbnailurl.medium){
+                                    thumbnailurl =item.thumbnailurl.medium.url;
+                                }
+                                else if (item.thumbnailurl.default){
+                                    thumbnailurl =item.thumbnailurl.default.url;
+                                }
+                            }
+                            
+                            
+                        return <Pressable
+                            android_ripple={{ color: 'white' }}
+                            onPress={() => {
+                                navigation.navigate('WatchVideo', {
+                                    videoid: item.videoid,
+                                    title: item.title,
+                                });
+    
+                            }}>
+                            <View style={{ height: "auto", width: "90%", backgroundColor: '#234B76', margin: 10, borderRadius: 10, alignSelf: 'center', padding: 10 }}>
+                                <Image
+                                    style={{ height: 170, width: "100%", alignSelf: 'center', borderTopLeftRadius: 8, borderTopRightRadius: 8 }}
+                                    source={{ uri: thumbnailurl }}
+                                />
+                                <Text style={[styles.videoTitle]} numberOfLines={2}>{item.title}</Text>
+                                <Text style={[styles.normalText,{fontSize: 14, alignSelf: 'flex-end', marginHorizontal: 10}]} numberOfLines={1}>{item.channelname}</Text>
+                                <Text style={[styles.normalText,{fontSize: 11, alignSelf: 'flex-start', marginHorizontal: 10, marginTop: 10, color: 'white'}]} numberOfLines={4}>Example: "...{item.samplesentence}..."</Text>
+    
+                            </View>
+                        </Pressable>}
+                        }
+                    />
+                    <Text style = {styles.title}>------------------------</Text>
+                    <Text style = {[styles.title,{textAlign: 'left', color: 'white', marginLeft: 20, marginTop: 30}]}>Other things:</Text>
+                    </View>}
+                    renderItem={({ item }) => {
+                        let thumbnailurl ='';
+                        if(item.thumbnailurl.maxres){
+                            thumbnailurl =item.thumbnailurl.maxres.url;
+                        }
+                        else if (item.thumbnailurl.standard){
+                            thumbnailurl =item.thumbnailurl.standard.url;
+                        } 
+                        else if (item.thumbnailurl.high){
+                            thumbnailurl =item.thumbnailurl.high.url;
+                        }
+                        else if (item.thumbnailurl.medium){
+                            thumbnailurl =item.thumbnailurl.medium.url;
+                        }
+                        else if (item.thumbnailurl.default){
+                            thumbnailurl =item.thumbnailurl.default.url;
+                        }
+                        
+                    return <Pressable
                         android_ripple={{ color: 'white' }}
                         onPress={() => {
                             navigation.navigate('WatchVideo', {
@@ -155,18 +232,20 @@ useEffect(() =>{
                             });
 
                         }}>
-                        <View style={{ height: 200, width: 260, backgroundColor: '#234B76', margin: 10, borderRadius: 10 }}>
+                        <View style={{ height: "auto", width: "90%", backgroundColor: '#234B76', margin: 10, borderRadius: 10, alignSelf: 'center', padding: 10 }}>
                             <Image
-                                style={{ height: 140, width: 240, alignSelf: 'center', marginTop: 10, borderTopLeftRadius: 8, borderTopRightRadius: 8 }}
-                                source={{ uri: item.thumbnailurl.default.url}}
+                                style={{ height: 170, width: "100%", alignSelf: 'center', borderTopLeftRadius: 8, borderTopRightRadius: 8 }}
+                                source={{ uri: thumbnailurl }}
                             />
                             <Text style={[styles.videoTitle]} numberOfLines={2}>{item.title}</Text>
-                        </View>
-                    </Pressable>
-                    }
-                    horizontal={false}
-                />
+                            <Text style={[styles.normalText,{fontSize: 14, alignSelf: 'flex-end', marginHorizontal: 10}]} numberOfLines={1}>{item.channelname}</Text>
+                            <Text style={[styles.normalText,{fontSize: 11, alignSelf: 'flex-start', marginHorizontal: 10, marginTop: 10, color: 'white'}]} numberOfLines={4}>Example: "...{item.samplesentence}..."</Text>
 
+                        </View>
+                    </Pressable>}
+                    }
+                    
+                />
             </View>
         
         }
@@ -187,7 +266,7 @@ const styles = StyleSheet.create({
         fontFamily: 'genshin', fontSize: 15, marginHorizontal: 5, color: '#E5D5A4'
     },
     videoTitle: {
-        fontSize: 15,
+        fontSize: 17,
         color: '#F2DD7D',
         fontFamily: 'genshin',
         textAlign: 'left',

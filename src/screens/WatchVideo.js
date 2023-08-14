@@ -127,7 +127,16 @@ function WatchVideo({ route }) {
         // Handle the response data
         //console.log('from data: ', data.data.thai.caption[0]["-start"]);
         // console.log("dât frtom getSubtitle: ", data.data.caption);
-        setSubtitleData(data.data.caption);
+        if(data == undefined){
+          setSubtitleData([{
+            text: 'unfortunately we cannot find the english subtitle to this video',
+            start: 1,
+            dur: 1
+          }]);
+        }else{
+          setSubtitleData(data.data.caption);
+        }
+        
         setLoadingSubtitle(false);
         //console.log(data.data.thai.caption);
         // Additional logic based on the response data
@@ -143,19 +152,13 @@ function WatchVideo({ route }) {
   useEffect(() => {
     // getVideo();
     getSubtitle();
-    setTimeout(() => {
-      navigation.addListener('beforeRemove', (e) => {
-        console.log(e.data.action);
-        e.preventDefault();
-        setModalVisible(true);
-        setEvent(e.data.action);
-        
-
-      })
-    }, 11111)
+  
+   
 
     // console.log(subtitleData)
   }, []);
+
+
 
 
 
@@ -228,11 +231,22 @@ function WatchVideo({ route }) {
 
 
       // }, 500); // 100 ms refresh. increase it if you don't require millisecond precision
-
+      if(subtitleData[1]){
+        setTimeout(() => {
+       navigation.addListener('beforeRemove', (e) => {
+       console.log(e.data.action);
+       e.preventDefault();
+       setModalVisible(true);
+       setEvent(e.data.action);
+     })
+   }, 11111)
+      }
+      
       return () => {
 
         clearInterval(interval);
       };
+      
     }
   }, [loadingSubtitle]);
 

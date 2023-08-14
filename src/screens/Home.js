@@ -193,11 +193,13 @@ function Home() {
                     <Image style={{ height: 45, width: 41, margin: 5 }} source={require('../../assets/icons/user.png')} />
                 </View> */}
                 <View style={{ width: "85%", flexDirection: 'row', alignSelf: 'center', alignContent: 'center', marginHorizontal: 20 }} >
-                    <View style={{ width: 'auto', justifyContent: 'center', paddingLeft: 8, borderTopLeftRadius: 50, borderBottomLeftRadius: 50, backgroundColor: '#F1E4CA', paddingRight: 5 }}><FontAwesome name="search" size={25} /></View>
+                    <View style={{ width: 'auto', justifyContent: 'center', paddingLeft: 8, borderTopLeftRadius: 50, borderBottomLeftRadius: 50, backgroundColor: '#F1E4CA', paddingRight: 5 }}><FontAwesome name="search" size={25} color= "gray"/></View>
                     <TextInput
 
-                        style={{ width: '90%', backgroundColor: '#F1E4CA', borderTopRightRadius: 50, borderBottomRightRadius: 50 }}
+                        style={{ width: '90%', backgroundColor: '#F1E4CA', borderTopRightRadius: 50, borderBottomRightRadius: 50, color: "black" }}
                         placeholder="video search"
+                        placeholderTextColor= "gray"
+                    
                         onChangeText={(v) => { setKeyword(v) }}
                         onSubmitEditing={() => {
                             navigation.navigate('VideoSearch', { keyword: keyword })

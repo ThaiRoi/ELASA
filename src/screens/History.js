@@ -41,6 +41,7 @@ function History () {
 
             <FlatList
                     data={historyData}
+                    inverted = {true}
                     renderItem={({ item }) => {
                         let thumbnailurl ='';
                         if(item.thumbnailurl.maxres){
@@ -78,6 +79,7 @@ function History () {
                             <Text style={[styles.normalText,{fontSize: 12, alignSelf: 'center', marginHorizontal: 20}]} >comprehension: {item.comprehensionlevel[item.comprehensionlevel.length-1]}%</Text>
                             <Text style={[styles.normalText,{fontSize: 12, alignSelf: 'center', marginHorizontal: 20}]} >last watched: {item.watchdate[item.watchdate.length-1]}</Text>
                             <Text style={[styles.normalText,{fontSize: 12, alignSelf: 'center', marginHorizontal: 20}]} >Watched {item.timeswatched} times</Text>
+                            <Text style={[styles.normalText,{fontSize: 12, alignSelf: 'center', marginHorizontal: 20}]} >Watche time {item.watchtime}</Text>
 
                         </View>
                     </Pressable>}
