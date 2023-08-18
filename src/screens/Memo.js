@@ -39,7 +39,11 @@ function Memo() {
 
             <View style={{ height: 80, flexDirection: 'row', justifyContent: 'space-evenly' }}>
                 <Pressable
-                    onPress={() => { navigation.navigate('CreateMemo') }}
+                    onPress={() => { 
+                        navigation.navigate('CreateMemo',{
+                        sub: null,
+                    }) 
+                }}
                     style={{ width: '43.5%', }}
                 >
                     <View style={{ height: 60, width: '100%', backgroundColor: '#5BB467', borderRadius: 10, justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>

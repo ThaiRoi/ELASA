@@ -25,15 +25,15 @@ function Account() {
  
     return (
         <ScrollView style={{ flex: 1, backgroundColor: '#153C43' }}>
-            <Text style={styles.title}>Account {Math.floor(value)}</Text>
-                <Slider
+            <Text style={styles.title}>Account</Text>
+                {/* <Slider
                 style={{width: 200, height: 40, alignSelf: 'center'}}
                 minimumValue={0}
                 maximumValue={100}
                 minimumTrackTintColor="#FFFFFF"
                 maximumTrackTintColor="#000000"
                 onValueChange={(v)=>{setValue(v)}}
-                />
+                /> */}
             <Pressable
                 onPress={() => { }}
                 android_ripple={{ color: '#E5D5A4' }}
@@ -126,11 +126,11 @@ function Account() {
                     navigation.dispatch
                     console.log('Done.')
                 }}
-                style={[styles.menuBox, { shadowColor: 'red' }]}
+                style={[styles.menuBox, { shadowColor: 'pink' }]}
                 android_ripple={{ color: 'red' }}
             >
                 <View>
-                    <Text style={[styles.normalText, { color: 'red' }]}>Log out</Text>
+                    <Text style={[styles.normalText, { color: 'pink' }]}>Log out</Text>
                 </View>
             </Pressable>
 
@@ -153,7 +153,13 @@ const styles = StyleSheet.create({
         fontFamily: 'genshin', fontSize: 15, marginHorizontal: 5, color: '#E5D5A4'
     },
     menuBox: {
-        height: 50, width: '90%', backgroundColor: '#153C43', alignSelf: 'center', shadowColor: 'yellow', elevation: 10, margin: 10
+        height: 50, width: '90%', 
+        backgroundColor: '#153C43', 
+        alignSelf: 'center', 
+        shadowColor: 'yellow', 
+        elevation: 10, 
+        margin: 10,
+        justifyContent: 'center'
     }
 
 })

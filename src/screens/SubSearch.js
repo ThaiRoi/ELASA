@@ -32,6 +32,7 @@ const[historyFound, setHistoryFound]= useState([]);
 const [videoFound, setVideoFound] = useState([]);
 const [searched, setSearched] = useState(false);
 const [wordToFind, setWordToFind] = useState('');
+let word;
 const [loading, setLoading] = useState(false);
 const inputRef = useRef();
 useEffect(() =>{
@@ -46,6 +47,7 @@ useEffect(() =>{
         }
         Keyboard.dismiss();
          console.log('pressed')
+         setSearched(false);
         setLoading(true);
 
         console.log(wordToFind);
@@ -56,8 +58,14 @@ useEffect(() =>{
           })
           .then(function (response) {
             // console.log("this is response",response.data.data.history);
-            setVideoFound(response.data.data.other);
-            setHistoryFound(response.data.data.history);
+           
+
+                setVideoFound(response.data.data.other);
+        
+    
+                setHistoryFound(response.data.data.history);
+            
+            
             //console.log('console log response search subtitle api: ',response.data.data.finalRes.thumbnailurl.maxres.url);
           })
           .then(()=>{
@@ -94,6 +102,7 @@ useEffect(() =>{
                         placeholderTextColor="gray"
                         onChangeText={(v)=> {
                             setWordToFind(v);
+                        
                             // console.log(wordToFind);
                         }}  
                         ref={inputRef}
@@ -115,6 +124,7 @@ useEffect(() =>{
                             setWordToFind('');
                             setSearched(false);
                             setLoading(false);
+                            word = '';
                         }}
             >
                     <View style = {{height: 50, width: 80, backgroundColor: 'green', alignSelf: 'center', marginVertical: 20, justifyContent: 'center', borderRadius: 10}}>
@@ -186,6 +196,7 @@ useEffect(() =>{
                                 navigation.navigate('WatchVideo', {
                                     videoid: item.videoid,
                                     title: item.title,
+                                    wordToFind: wordToFind
                                 });
     
                             }}>
@@ -206,8 +217,9 @@ useEffect(() =>{
                     <Text style = {[styles.title,{textAlign: 'left', color: 'white', marginLeft: 20, marginTop: 30}]}>Other things:</Text>
                     </View>}
                     renderItem={({ item }) => {
-                        let thumbnailurl ='';
-                        if(item.thumbnailurl.maxres){
+                        let thumbnailurl ='https://yaviet.com/wp-content/uploads/2018/08/loi-404-not-found-300x225.jpg';
+                        if(item.thumbnailurl){
+                            if(item.thumbnailurl.maxres){
                             thumbnailurl =item.thumbnailurl.maxres.url;
                         }
                         else if (item.thumbnailurl.standard){
@@ -222,6 +234,10 @@ useEffect(() =>{
                         else if (item.thumbnailurl.default){
                             thumbnailurl =item.thumbnailurl.default.url;
                         }
+
+                        }
+
+                       
                         
                     return <Pressable
                         android_ripple={{ color: 'white' }}
@@ -229,6 +245,8 @@ useEffect(() =>{
                             navigation.navigate('WatchVideo', {
                                 videoid: item.videoid,
                                 title: item.title,
+                                wordToFind: wordToFind
+
                             });
 
                         }}>

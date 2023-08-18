@@ -22,7 +22,7 @@ function Home() {
     const userData = useSelector(userReturn);
     const [keyword, setKeyword] = useState('');
     const [page, setPage] = useState(1);
-    var allow = false;
+    // var allow = false;
     const navigation = useNavigation();
     const [recommendData, setRecommendData] = useState([]);
     function getRecommendation() {
@@ -52,27 +52,81 @@ function Home() {
     //     })
     // }, [])
 
-    console.log(allow)
+    // console.log(allow)
 
     const OriginalContent = () => {
         return (
             <ScrollView>
                 <Text style={styles.titleView}>About English learning:</Text>
                 <FlatList
-                    data={DATA}
-                    renderItem={({ item }) => <Recommend title={item.title} />}
+                    data={englishLearningData}
+                    renderItem={({ item }) => <Pressable
+                    android_ripple={{ color: 'white' }}
+                    onPress={() => {
+                        navigation.navigate('WatchVideo', {
+                            videoid: item.videoid,
+                            title: item.title,
+                        });
+
+                    }}>
+                    <View style={{ height: 215, width: 260, backgroundColor: '#234B76', margin: 10, borderRadius: 10 }}>
+                        <Image
+                            style={{ height: 140, width: 240, alignSelf: 'center', marginTop: 10, borderTopLeftRadius: 8, borderTopRightRadius: 8 }}
+                            source={{ uri: item.thumbnailurl }}
+                        />
+                        <Text style={[styles.videoTitle]} numberOfLines={2}>{item.title}</Text>
+                        <Text style={[styles.normalText, { fontSize: 12, alignSelf: 'flex-end', marginHorizontal: 20 }]} numberOfLines={1}>{item.channelname}</Text>
+
+                    </View>
+                </Pressable>}
                     horizontal={true}
                 />
                 <Text style={styles.titleView}>About the app:</Text>
                 <FlatList
-                    data={DATA}
-                    renderItem={({ item }) => <Recommend title={item.title} />}
+                    data={aboutAppData}
+                    renderItem={({ item }) => <Pressable
+                    android_ripple={{ color: 'white' }}
+                    onPress={() => {
+                        navigation.navigate('WatchVideo', {
+                            videoid: item.videoid,
+                            title: item.title,
+                        });
+
+                    }}>
+                    <View style={{ height: 215, width: 260, backgroundColor: '#234B76', margin: 10, borderRadius: 10 }}>
+                        <Image
+                            style={{ height: 140, width: 240, alignSelf: 'center', marginTop: 10, borderTopLeftRadius: 8, borderTopRightRadius: 8 }}
+                            source={{ uri: item.thumbnailurl }}
+                        />
+                        <Text style={[styles.videoTitle]} numberOfLines={2}>{item.title}</Text>
+                        <Text style={[styles.normalText, { fontSize: 12, alignSelf: 'flex-end', marginHorizontal: 20 }]} numberOfLines={1}>{item.channelname}</Text>
+
+                    </View>
+                </Pressable>}
                     horizontal={true}
                 />
                 <Text style={styles.titleView}>Random English content:</Text>
                 <FlatList
-                    data={DATA}
-                    renderItem={({ item }) => <Recommend title={item.title} />}
+                    data={randomContentData}
+                    renderItem={({ item }) => <Pressable
+                    android_ripple={{ color: 'white' }}
+                    onPress={() => {
+                        navigation.navigate('WatchVideo', {
+                            videoid: item.videoid,
+                            title: item.title,
+                        });
+
+                    }}>
+                    <View style={{ height: 215, width: 260, backgroundColor: '#234B76', margin: 10, borderRadius: 10 }}>
+                        <Image
+                            style={{ height: 140, width: 240, alignSelf: 'center', marginTop: 10, borderTopLeftRadius: 8, borderTopRightRadius: 8 }}
+                            source={{ uri: item.thumbnailurl }}
+                        />
+                        <Text style={[styles.videoTitle]} numberOfLines={2}>{item.title}</Text>
+                        <Text style={[styles.normalText, { fontSize: 12, alignSelf: 'flex-end', marginHorizontal: 20 }]} numberOfLines={1}>{item.channelname}</Text>
+
+                    </View>
+                </Pressable>}
                     horizontal={true}
                 />
             </ScrollView>
@@ -286,7 +340,7 @@ const styles = StyleSheet.create({
         height: 80, justifyContent: 'center', alignItems: 'center', borderBottomWidth: 1, borderBottomColor: '#5BB467', padding: 1
     },
     titleView: {
-        fontSize: 15,
+        fontSize: 20,
         color: '#F1E4CA',
         fontFamily: 'genshin',
         textAlign: 'left',
@@ -321,16 +375,6 @@ const Video = ({ title }) => (
     </View>
 );
 
-const EnglishLearningVideo = ({ title }) => (
-    <View style={{ height: 200, width: 200, backgroundColor: 'green', margin: 5, borderRadius: 10, justifyContent: 'center' }}>
-        <Text style={styles.title}>{title}</Text>
-    </View>
-);
-const AboutAppVideo = ({ title }) => (
-    <View style={{ height: 200, width: 200, backgroundColor: 'green', margin: 5, borderRadius: 10, justifyContent: 'center' }}>
-        <Text style={styles.title}>{title}</Text>
-    </View>
-);
 const RandomContentVideo = ({ title }) => (
     <View style={{ height: 200, width: 200, backgroundColor: 'green', margin: 5, borderRadius: 10, justifyContent: 'center' }}>
         <Text style={styles.title}>{title}</Text>
@@ -338,8 +382,66 @@ const RandomContentVideo = ({ title }) => (
 );
 
 
+const englishLearningData = [
+    {
+     "videoid": "Vv4VCHcxVN4",
+     "title": "Workshop học tiếng Anh như thế nào",
+     "thumbnailurl": "https://i.ytimg.com/vi/Vv4VCHcxVN4/maxresdefault.jpg",
+     "uploaddate": "whocares",
+     "channelid": "thairoi8382",
+     "channelname": "Thái Roi"
+ },
+ {
+     "videoid": "GkYpv5Q9vSA",
+     "title": "Cách duy nhất để học được tiếng Anh",
+     "thumbnailurl": "https://img.youtube.com/vi/GkYpv5Q9vSA/hqdefault.jpg",
+     "uploaddate": "whocares",
+     "channelid": "thairoi8382",
+     "channelname": "Thái Roi"
+ },
 
+] 
 
+const aboutAppData = [
+    {
+     "videoid": "bepkjsOwfg0",
+     "title": "Không tìm được sub xử lý như thế nào?",
+     "thumbnailurl": "https://i.ytimg.com/vi/tDfpQ3_zijM/maxresdefault.jpg",
+     "uploaddate": "whocares",
+     "channelid": "thairoi8382",
+     "channelname": "Thái Roi"
+ },
+
+ 
+]
+
+const randomContentData = [
+       {
+        "videoid": "R77ZvlHOGwU",
+        "title": "Midnight deep Would you rather questions",
+        "thumbnailurl": "https://i.ytimg.com/vi/R77ZvlHOGwU/maxresdefault.jpg",
+        "uploaddate": "whocares",
+        "channelid": "thairoi8382",
+        "channelname": "Thái Roi"
+    },
+    {
+        "videoid": "AF-4QwKMBJs",
+        "title": "Valorant #2",
+        "thumbnailurl": "https://img.youtube.com/vi/AF-4QwKMBJs/hqdefault.jpg",
+        "uploaddate": "whocares",
+        "channelid": "thairoi8382",
+        "channelname": "Thái Roi"
+    },
+    {
+        "videoid": "m4zdNxjLbZI",
+        "title": "Tôi lồng tiếng Tighnari",
+        "thumbnailurl": "https://img.youtube.com/vi/m4zdNxjLbZI/hqdefault.jpg",
+        "uploaddate": "whocares",
+        "channelid": "thairoi8382",
+        "channelname": "Thái Roi"
+    },
+    
+]
 
 
 const DATA = [

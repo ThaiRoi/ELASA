@@ -41,7 +41,7 @@ function History () {
 
             <FlatList
                     data={historyData}
-                    inverted = {true}
+                    contentContainerStyle={{ flexDirection: 'column-reverse' }}
                     renderItem={({ item }) => {
                         let thumbnailurl ='';
                         if(item.thumbnailurl.maxres){
