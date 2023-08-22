@@ -20,6 +20,11 @@ import * as Animatable from 'react-native-animatable';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {
+  GoogleSignin,
+  GoogleSigninButton,
+  statusCodes,
+} from '@react-native-google-signin/google-signin';
 
 
 
@@ -45,11 +50,23 @@ const ContentLogin = () => {
     redirect: 'follow'
   };
 
+  GoogleSignin.configure({
+    scopes: ['https://www.googleapis.com/auth/youtube.readonly'], // what API you want to access on behalf of the user, default is email and profile
+    webClientId: '160860312025-uljkdhv5eivi9r8hficnae6u6mm8s26o.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
+    offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
+    hostedDomain: '', // specifies a hosted domain restriction
+    forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
+    accountName: '', // [Android] specifies an account name on the device that should be used
+//  iosClientId: '<FROM DEVELOPER CONSOLE>', // [iOS] if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
+//    googleServicePlistPath: '', // [iOS] if you renamed your GoogleService-Info file, new name here, e.g. GoogleService-Info-Staging
+   // openIdRealm: '', // [iOS] The OpenID2 realm of the home web server. This allows Google to include the user's OpenID Identifier in the OpenID Connect ID token.
+//profileImageSize: 120, // [iOS] The desired height (and width) of the profile image. Defaults to 120px
+  });
   return <View>
 
     <Text style={[styles.text, { marginTop: 20 }]}>Account:</Text>
     <TextInput
-      style={styles.inputBox}
+      style={[styles.inputBox, {color: 'black', paddingLeft: 10}]}
       value={account}
       onChangeText={(value => {
         setAccount(value)
@@ -57,7 +74,7 @@ const ContentLogin = () => {
     />
     <Text style={styles.text}>Password:</Text>
     <TextInput
-      style={styles.inputBox}
+      style={[styles.inputBox, {color: 'black', paddingLeft: 10}]}
       secureTextEntry={true}
       defaultValue={password}
       keyboardType='default'
@@ -123,15 +140,43 @@ const ContentLogin = () => {
       </Pressable>
 
       <Pressable
-      onPress={async ()=>{
-        try {
-          const userData = await AsyncStorage.getItem('userData');
-           userData != null ? JSON.parse(userData) : null;
-           console.log(userData)
-        } catch (e) {
-          // error reading value
-        }
-      }}
+      onPress={
+      //   async ()=>{
+      //   try {
+      //     const userData = await AsyncStorage.getItem('userData');
+      //      userData != null ? JSON.parse(userData) : null;
+      //      console.log(userData)
+      //   } catch (e) {
+      //     // error reading value
+      //   }
+      // }
+      async ()=>{
+          try {
+            await GoogleSignin.hasPlayServices();
+            const userInfo = await GoogleSignin.signIn();
+            const token = await GoogleSignin.getTokens()
+            console.log("google sign in",token);
+          } catch (error) {
+            if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+              // user cancelled the login flow
+              console.log(error.code);
+            } else if (error.code === statusCodes.IN_PROGRESS) {
+              // operation (e.g. sign in) is in progress already
+              console.log(error.code);
+
+            } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+              // play services not available or outdated
+              console.log(error.code);
+
+            } else {
+              // some other error happened
+              console.log("idk man: ",error);
+
+            }
+          }
+    
+      }
+    }
       >
          <Image style={{ height: 50, width: 50 }} source={require('../../assets/icons/_Google.png')} />
       </Pressable>
@@ -227,19 +272,19 @@ const ContentSignup = () => {
     </Pressable> */}
     <Text style={[styles.text, { marginTop: 20 }]}>Account:</Text>
     <TextInput
-      style={styles.inputBox}
+      style={[styles.inputBox, {color: 'black', paddingLeft: 10}]}
       onChangeText={v => setAccount(v)}
     />
     <Text style={styles.text} >Password:</Text>
     <TextInput
-      style={styles.inputBox}
+      style={[styles.inputBox, {color: 'black', paddingLeft: 10}]}
       secureTextEntry={true}
       keyboardType='default'
       onChangeText={v => setPassword(v)}
     />
     <Text style={styles.text}>Confirm password:</Text>
     <TextInput
-      style={styles.inputBox}
+      style={[styles.inputBox, {color: 'black', paddingLeft: 10}]}
       secureTextEntry={true}
       keyboardType='default'
       onChangeText={v => setRePassword(v)}

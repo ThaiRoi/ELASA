@@ -16,12 +16,22 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import serverAddress from "../global";
 import { useSelector } from "react-redux";
 import { userReturn } from "../store/store";
+import {
+    GoogleSignin,
+    GoogleSigninButton,
+    statusCodes,
+} from '@react-native-google-signin/google-signin';
+import axios from "axios";
 
 
 function Home() {
     const userData = useSelector(userReturn);
     const [keyword, setKeyword] = useState('');
     const [page, setPage] = useState(1);
+    const [loginYoutube, setLoginYoutube] = useState(false);
+    const [channelData, setChannelData]= useState();
+    const [selectChannel, setSelectChannel] = useState();
+    const [channelVideo, setChannelVideo] = useState();
     // var allow = false;
     const navigation = useNavigation();
     const [recommendData, setRecommendData] = useState([]);
@@ -40,7 +50,18 @@ function Home() {
 
     useEffect(() => {
         getRecommendation();
-
+        GoogleSignin.configure({
+            scopes: ['https://www.googleapis.com/auth/youtube.readonly'], // what API you want to access on behalf of the user, default is email and profile
+            webClientId: '160860312025-uljkdhv5eivi9r8hficnae6u6mm8s26o.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
+            offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
+            hostedDomain: '', // specifies a hosted domain restriction
+            forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
+            accountName: '', // [Android] specifies an account name on the device that should be used
+            //  iosClientId: '<FROM DEVELOPER CONSOLE>', // [iOS] if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
+            //    googleServicePlistPath: '', // [iOS] if you renamed your GoogleService-Info file, new name here, e.g. GoogleService-Info-Staging
+            // openIdRealm: '', // [iOS] The OpenID2 realm of the home web server. This allows Google to include the user's OpenID Identifier in the OpenID Connect ID token.
+            //profileImageSize: 120, // [iOS] The desired height (and width) of the profile image. Defaults to 120px
+        });
 
     }, [])
 
@@ -48,7 +69,7 @@ function Home() {
     //     navigation.addListener('beforeRemove', (e) => {
     //         if (userData == null) return;
     //         e.preventDefault();
-            
+
     //     })
     // }, [])
 
@@ -61,72 +82,72 @@ function Home() {
                 <FlatList
                     data={englishLearningData}
                     renderItem={({ item }) => <Pressable
-                    android_ripple={{ color: 'white' }}
-                    onPress={() => {
-                        navigation.navigate('WatchVideo', {
-                            videoid: item.videoid,
-                            title: item.title,
-                        });
+                        android_ripple={{ color: 'white' }}
+                        onPress={() => {
+                            navigation.navigate('WatchVideo', {
+                                videoid: item.videoid,
+                                title: item.title,
+                            });
 
-                    }}>
-                    <View style={{ height: 215, width: 260, backgroundColor: '#234B76', margin: 10, borderRadius: 10 }}>
-                        <Image
-                            style={{ height: 140, width: 240, alignSelf: 'center', marginTop: 10, borderTopLeftRadius: 8, borderTopRightRadius: 8 }}
-                            source={{ uri: item.thumbnailurl }}
-                        />
-                        <Text style={[styles.videoTitle]} numberOfLines={2}>{item.title}</Text>
-                        <Text style={[styles.normalText, { fontSize: 12, alignSelf: 'flex-end', marginHorizontal: 20 }]} numberOfLines={1}>{item.channelname}</Text>
+                        }}>
+                        <View style={{ height: 215, width: 260, backgroundColor: '#234B76', margin: 10, borderRadius: 10 }}>
+                            <Image
+                                style={{ height: 140, width: 240, alignSelf: 'center', marginTop: 10, borderTopLeftRadius: 8, borderTopRightRadius: 8 }}
+                                source={{ uri: item.thumbnailurl }}
+                            />
+                            <Text style={[styles.videoTitle]} numberOfLines={2}>{item.title}</Text>
+                            <Text style={[styles.normalText, { fontSize: 12, alignSelf: 'flex-end', marginHorizontal: 20 }]} numberOfLines={1}>{item.channelname}</Text>
 
-                    </View>
-                </Pressable>}
+                        </View>
+                    </Pressable>}
                     horizontal={true}
                 />
                 <Text style={styles.titleView}>About the app:</Text>
                 <FlatList
                     data={aboutAppData}
                     renderItem={({ item }) => <Pressable
-                    android_ripple={{ color: 'white' }}
-                    onPress={() => {
-                        navigation.navigate('WatchVideo', {
-                            videoid: item.videoid,
-                            title: item.title,
-                        });
+                        android_ripple={{ color: 'white' }}
+                        onPress={() => {
+                            navigation.navigate('WatchVideo', {
+                                videoid: item.videoid,
+                                title: item.title,
+                            });
 
-                    }}>
-                    <View style={{ height: 215, width: 260, backgroundColor: '#234B76', margin: 10, borderRadius: 10 }}>
-                        <Image
-                            style={{ height: 140, width: 240, alignSelf: 'center', marginTop: 10, borderTopLeftRadius: 8, borderTopRightRadius: 8 }}
-                            source={{ uri: item.thumbnailurl }}
-                        />
-                        <Text style={[styles.videoTitle]} numberOfLines={2}>{item.title}</Text>
-                        <Text style={[styles.normalText, { fontSize: 12, alignSelf: 'flex-end', marginHorizontal: 20 }]} numberOfLines={1}>{item.channelname}</Text>
+                        }}>
+                        <View style={{ height: 215, width: 260, backgroundColor: '#234B76', margin: 10, borderRadius: 10 }}>
+                            <Image
+                                style={{ height: 140, width: 240, alignSelf: 'center', marginTop: 10, borderTopLeftRadius: 8, borderTopRightRadius: 8 }}
+                                source={{ uri: item.thumbnailurl }}
+                            />
+                            <Text style={[styles.videoTitle]} numberOfLines={2}>{item.title}</Text>
+                            <Text style={[styles.normalText, { fontSize: 12, alignSelf: 'flex-end', marginHorizontal: 20 }]} numberOfLines={1}>{item.channelname}</Text>
 
-                    </View>
-                </Pressable>}
+                        </View>
+                    </Pressable>}
                     horizontal={true}
                 />
                 <Text style={styles.titleView}>Random English content:</Text>
                 <FlatList
                     data={randomContentData}
                     renderItem={({ item }) => <Pressable
-                    android_ripple={{ color: 'white' }}
-                    onPress={() => {
-                        navigation.navigate('WatchVideo', {
-                            videoid: item.videoid,
-                            title: item.title,
-                        });
+                        android_ripple={{ color: 'white' }}
+                        onPress={() => {
+                            navigation.navigate('WatchVideo', {
+                                videoid: item.videoid,
+                                title: item.title,
+                            });
 
-                    }}>
-                    <View style={{ height: 215, width: 260, backgroundColor: '#234B76', margin: 10, borderRadius: 10 }}>
-                        <Image
-                            style={{ height: 140, width: 240, alignSelf: 'center', marginTop: 10, borderTopLeftRadius: 8, borderTopRightRadius: 8 }}
-                            source={{ uri: item.thumbnailurl }}
-                        />
-                        <Text style={[styles.videoTitle]} numberOfLines={2}>{item.title}</Text>
-                        <Text style={[styles.normalText, { fontSize: 12, alignSelf: 'flex-end', marginHorizontal: 20 }]} numberOfLines={1}>{item.channelname}</Text>
+                        }}>
+                        <View style={{ height: 215, width: 260, backgroundColor: '#234B76', margin: 10, borderRadius: 10 }}>
+                            <Image
+                                style={{ height: 140, width: 240, alignSelf: 'center', marginTop: 10, borderTopLeftRadius: 8, borderTopRightRadius: 8 }}
+                                source={{ uri: item.thumbnailurl }}
+                            />
+                            <Text style={[styles.videoTitle]} numberOfLines={2}>{item.title}</Text>
+                            <Text style={[styles.normalText, { fontSize: 12, alignSelf: 'flex-end', marginHorizontal: 20 }]} numberOfLines={1}>{item.channelname}</Text>
 
-                    </View>
-                </Pressable>}
+                        </View>
+                    </Pressable>}
                     horizontal={true}
                 />
             </ScrollView>
@@ -134,26 +155,76 @@ function Home() {
     }
 
     const ContentFromYourYoutube = () => {
-        return (
-            <View>
-                {/* prompt user to login to their youtube account */}
-                <FlatList
-                    data={DATA}
-                    ListHeaderComponent={(
-                        <View>
-                            <Text style={[styles.titleView]}>Channels</Text>
-                            <FlatList
-                                data={DATA}
-                                renderItem={({ item }) => <Channel title={item.title} />}
-                                horizontal={true}
-                            />
-                            <Text style={styles.titleView}>Videos from the channel:</Text>
-                        </View>
-                    )}
-                    renderItem={({ item }) => <Video title={item.title} />}
-                />
 
-            </View>
+        return (
+            <ScrollView>
+
+                {loginYoutube ?
+                 
+                            <View>
+                                <Text style={[styles.titleView]}>Channels</Text>
+                                <FlatList
+                                    data={channelData.items}
+                                    renderItem={({ item }) => (
+                                        <Pressable
+                                        onPress={()=>{
+                                            console.log(item.snippet.title);
+                                        }}
+                                        >
+                                        <View style={{ height: 'auto' }}>
+        
+                                        <Image 
+                                         style={{ height: 80, width: 80, backgroundColor: 'green', margin: 5, borderRadius: 50, justifyContent: 'center' }}
+                                        source={{uri: item.snippet.thumbnails.high.url}}
+                                        />
+                                  
+                                </View></Pressable>
+                                )
+                                
+                                }
+                                    horizontal={true}
+                                />
+                                <Text style={styles.titleView}>Videos from the channel:</Text>
+                                
+
+
+                            </View>
+                   
+
+                    : <View style={{ flex: 1 }} >
+                        <View style = {{height: 100, width: "80%",justifyContent: 'center', alignSelf: 'center'}}>
+                        <Text style={[styles.normalText, { textAlign: 'center' }]}>Login to your Google account to see videos from the channels you subscribed to</Text>
+                        
+                        </View>
+
+                        <Pressable
+                style = {{width: "80%", height: 50, backgroundColor: 'green', alignSelf: 'center', justifyContent: 'center', borderRadius: 10}}
+                onPress={async ()=>{
+                    const user = await GoogleSignin.signIn();
+                    console.log(user);
+                    
+                    axios.get('https://youtube.googleapis.com/youtube/v3/subscriptions?part=snippet&maxResults=25&mine=true&key=AIzaSyDil_bOsqhaiAFE3wNeraXB5wQrq_vsLBc',
+                     {
+                        headers: {
+                          'Authorization': `Bearer ${(await GoogleSignin.getTokens()).accessToken}`,
+                          'Accept' : 'application/json'
+                        }
+                    }
+                    )
+                    .then(res =>{
+                        console.log(res.data)
+                        setChannelData(res.data);
+                        setLoginYoutube(true);
+                    })
+                }}
+                >
+                   <Text style = {[styles.normalText,{textAlign: 'center'}]}>Login to Google</Text>
+                </Pressable> 
+                          
+                    </View>
+                }
+
+            </ScrollView>
         )
     }
 
@@ -247,13 +318,14 @@ function Home() {
                     <Image style={{ height: 45, width: 41, margin: 5 }} source={require('../../assets/icons/user.png')} />
                 </View> */}
                 <View style={{ width: "85%", flexDirection: 'row', alignSelf: 'center', alignContent: 'center', marginHorizontal: 20 }} >
-                    <View style={{ width: 'auto', justifyContent: 'center', paddingLeft: 8, borderTopLeftRadius: 50, borderBottomLeftRadius: 50, backgroundColor: '#F1E4CA', paddingRight: 5 }}><FontAwesome name="search" size={25} color= "gray"/></View>
+                    <View style={{ width: 'auto', justifyContent: 'center', paddingLeft: 8, borderTopLeftRadius: 50, borderBottomLeftRadius: 50, backgroundColor: '#F1E4CA', paddingRight: 5 }}>
+                        <FontAwesome name="search" size={25} color="gray" /></View>
                     <TextInput
 
                         style={{ width: '90%', backgroundColor: '#F1E4CA', borderTopRightRadius: 50, borderBottomRightRadius: 50, color: "black" }}
                         placeholder="video search"
-                        placeholderTextColor= "gray"
-                    
+                        placeholderTextColor="gray"
+
                         onChangeText={(v) => { setKeyword(v) }}
                         onSubmitEditing={() => {
                             navigation.navigate('VideoSearch', { keyword: keyword })
@@ -364,9 +436,12 @@ const Recommend = ({ title }) => (
 
 const Channel = ({ title }) => (
     <View style={{ height: 'auto' }}>
-        <View style={{ height: 80, width: 80, backgroundColor: 'green', margin: 5, borderRadius: 50, justifyContent: 'center' }}>
-            <Text style={styles.title}>{title}</Text>
-        </View>
+        
+            <Image 
+             style={{ height: 80, width: 80, backgroundColor: 'green', margin: 5, borderRadius: 50, justifyContent: 'center' }}
+            source={{uri: title}}
+            />
+      
     </View>
 );
 const Video = ({ title }) => (
@@ -384,39 +459,39 @@ const RandomContentVideo = ({ title }) => (
 
 const englishLearningData = [
     {
-     "videoid": "Vv4VCHcxVN4",
-     "title": "Workshop học tiếng Anh như thế nào",
-     "thumbnailurl": "https://i.ytimg.com/vi/Vv4VCHcxVN4/maxresdefault.jpg",
-     "uploaddate": "whocares",
-     "channelid": "thairoi8382",
-     "channelname": "Thái Roi"
- },
- {
-     "videoid": "GkYpv5Q9vSA",
-     "title": "Cách duy nhất để học được tiếng Anh",
-     "thumbnailurl": "https://img.youtube.com/vi/GkYpv5Q9vSA/hqdefault.jpg",
-     "uploaddate": "whocares",
-     "channelid": "thairoi8382",
-     "channelname": "Thái Roi"
- },
+        "videoid": "Vv4VCHcxVN4",
+        "title": "Workshop học tiếng Anh như thế nào",
+        "thumbnailurl": "https://i.ytimg.com/vi/Vv4VCHcxVN4/maxresdefault.jpg",
+        "uploaddate": "whocares",
+        "channelid": "thairoi8382",
+        "channelname": "Thái Roi"
+    },
+    {
+        "videoid": "GkYpv5Q9vSA",
+        "title": "Cách duy nhất để học được tiếng Anh",
+        "thumbnailurl": "https://img.youtube.com/vi/GkYpv5Q9vSA/hqdefault.jpg",
+        "uploaddate": "whocares",
+        "channelid": "thairoi8382",
+        "channelname": "Thái Roi"
+    },
 
-] 
+]
 
 const aboutAppData = [
     {
-     "videoid": "bepkjsOwfg0",
-     "title": "Không tìm được sub xử lý như thế nào?",
-     "thumbnailurl": "https://i.ytimg.com/vi/tDfpQ3_zijM/maxresdefault.jpg",
-     "uploaddate": "whocares",
-     "channelid": "thairoi8382",
-     "channelname": "Thái Roi"
- },
+        "videoid": "bepkjsOwfg0",
+        "title": "Không tìm được sub xử lý như thế nào?",
+        "thumbnailurl": "https://i.ytimg.com/vi/tDfpQ3_zijM/maxresdefault.jpg",
+        "uploaddate": "whocares",
+        "channelid": "thairoi8382",
+        "channelname": "Thái Roi"
+    },
 
- 
+
 ]
 
 const randomContentData = [
-       {
+    {
         "videoid": "R77ZvlHOGwU",
         "title": "Midnight deep Would you rather questions",
         "thumbnailurl": "https://i.ytimg.com/vi/R77ZvlHOGwU/maxresdefault.jpg",
@@ -440,7 +515,7 @@ const randomContentData = [
         "channelid": "thairoi8382",
         "channelname": "Thái Roi"
     },
-    
+
 ]
 
 
