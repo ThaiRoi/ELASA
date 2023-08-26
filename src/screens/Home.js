@@ -29,8 +29,8 @@ function Home() {
     const [keyword, setKeyword] = useState('');
     const [page, setPage] = useState(1);
     const [loginYoutube, setLoginYoutube] = useState(false);
-    const [channelData, setChannelData]= useState();
-    const [selectChannel, setSelectChannel] = useState();
+    const [channelData, setChannelData] = useState();
+    const [selectedChannel, setSelectedChannel] = useState();
     const [channelVideo, setChannelVideo] = useState();
     // var allow = false;
     const navigation = useNavigation();
@@ -47,6 +47,9 @@ function Home() {
                 console.error(error);
             });
     }
+    useEffect(()=>{
+        console.log("rerender");
+    }, [channelVideo, channelData, loginYoutube])
 
     useEffect(() => {
         getRecommendation();
@@ -65,15 +68,6 @@ function Home() {
 
     }, [])
 
-    // useEffect(() => {
-    //     navigation.addListener('beforeRemove', (e) => {
-    //         if (userData == null) return;
-    //         e.preventDefault();
-
-    //     })
-    // }, [])
-
-    // console.log(allow)
 
     const OriginalContent = () => {
         return (
@@ -129,7 +123,8 @@ function Home() {
                 <Text style={styles.titleView}>Random English content:</Text>
                 <FlatList
                     data={randomContentData}
-                    renderItem={({ item }) => <Pressable
+                    renderItem={({ item }) =>
+                     <Pressable
                         android_ripple={{ color: 'white' }}
                         onPress={() => {
                             navigation.navigate('WatchVideo', {
@@ -157,74 +152,177 @@ function Home() {
     const ContentFromYourYoutube = () => {
 
         return (
-            <ScrollView>
+            <View>
 
                 {loginYoutube ?
-                 
-                            <View>
-                                <Text style={[styles.titleView]}>Channels</Text>
-                                <FlatList
-                                    data={channelData.items}
-                                    renderItem={({ item }) => (
-                                        <Pressable
-                                        onPress={()=>{
-                                            console.log(item.snippet.title);
+
+                    <View>
+                        <View>
+                            <Text style={[styles.titleView]}>Channels</Text>
+                            <FlatList
+                                data={channelData.items}
+                                renderItem={({ item }) => (
+                                    <Pressable
+                                        onPress={() => {
+                                            console.log(item.snippet.resourceId.channelId);
+                                            //setSelectedChannelPlaylist(item.snippet.)
+                                            axios.get(`https://youtube.googleapis.com/youtube/v3/channels?part=contentDetails&id=${item.snippet.resourceId.channelId}&key=AIzaSyDil_bOsqhaiAFE3wNeraXB5wQrq_vsLBc`)
+                                                .then((res) => {
+                                                    console.log("this is res from youtube channel content detail to get playlist id", res.data.items[0].contentDetails.relatedPlaylists.uploads);
+                                                    axios.get(`https://youtube.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${res.data.items[0].contentDetails.relatedPlaylists.uploads}&maxResults=25&key=AIzaSyDil_bOsqhaiAFE3wNeraXB5wQrq_vsLBc`)
+                                                        .then(async (res) => {
+                                                            console.log('this is playlist data: ', res.data.items[0].snippet.channelTitle);
+                                                            const data = [];
+
+                                                            for (let i = 0; i < res.data.items.length; i++) {
+
+                                                                data.push({
+                                                                    "videoid": res.data.items[i].snippet.resourceId.videoId,
+                                                                    "title": res.data.items[i].snippet.title,
+                                                                    "thumbnailurl": res.data.items[i].snippet.thumbnails,
+                                                                    "uploaddate": res.data.items[i].snippet.publishedAt,
+                                                                    "channelid": res.data.items[i].snippet.channelId,
+                                                                    "channelname": res.data.items[i].snippet.channelTitle
+                                                                });
+
+                                                            }
+                                                            setChannelVideo(data);
+                                                            console.log("this is data", channelVideo)
+                                                        })
+                                                })
                                         }}
-                                        >
-                                        <View style={{ height: 'auto' }}>
-        
-                                        <Image 
-                                         style={{ height: 80, width: 80, backgroundColor: 'green', margin: 5, borderRadius: 50, justifyContent: 'center' }}
-                                        source={{uri: item.snippet.thumbnails.high.url}}
-                                        />
-                                  
-                                </View></Pressable>
+                                    >
+                                        <View style={{ height: 'auto', alignSelf: 'center'}}>
+
+                                            <Image
+                                                style={{ height: 80, width: 80, backgroundColor: 'green', margin: 5, borderRadius: 50, justifyContent: 'center', alignSelf: 'center' }}
+                                                source={{ uri: item.snippet.thumbnails.high.url }}
+                                            />
+
+                                        </View></Pressable>
                                 )
-                                
+
                                 }
-                                    horizontal={true}
+                                horizontal={true}
+                            />
+                            <Text style={styles.titleView}>Videos from the channel:</Text>
+                        </View>
+                                {channelVideo
+                                ?
+                        // <FlatList
+                        //     data={channelVideo}
+                        //     renderItem={(item) => {
+                        //         <Pressable
+                        //             android_ripple={{ color: 'white' }}
+                        //             onPress={() => {
+                        //                 navigation.navigate('WatchVideo', {
+                        //                     videoid: item.videoid,
+                        //                     title: item.title,
+                        //                 });
+
+                        //             }}>
+                        //             <View style={{ height: 215, width: 260, backgroundColor: '#234B76', margin: 10, borderRadius: 10 }}>
+                        //                 <Image
+                        //                     style={{ height: 140, width: 240, alignSelf: 'center', marginTop: 10, borderTopLeftRadius: 8, borderTopRightRadius: 8 }}
+                        //                     source={{}}
+                        //                 />
+                        //                 <Text style={[styles.videoTitle]} numberOfLines={2}>{item.title}</Text>
+                        //                 <Text style={[styles.normalText, { fontSize: 12, alignSelf: 'flex-end', marginHorizontal: 20 }]} numberOfLines={1}>{item.channelname}</Text>
+
+                        //             </View>
+                        //         </Pressable>
+                        //     }}
+                        // />
+                        <FlatList
+                        data={channelVideo}
+                        style = {{height: 300}}
+                        renderItem={({ item }) => 
+                        {
+                            let thumbnailurl ='';
+                        if(item.thumbnailurl.maxres){
+                            thumbnailurl =item.thumbnailurl.maxres.url;
+                        }
+                        else if (item.thumbnailurl.standard){
+                            thumbnailurl =item.thumbnailurl.standard.url;
+                        } 
+                        else if (item.thumbnailurl.high){
+                            thumbnailurl =item.thumbnailurl.high.url;
+                        }
+                        else if (item.thumbnailurl.medium){
+                            thumbnailurl =item.thumbnailurl.medium.url;
+                        }
+                        else if (item.thumbnailurl.default){
+                            thumbnailurl =item.thumbnailurl.default.url;
+                        }
+                        return(
+                            <Pressable
+                            android_ripple={{ color: 'white' }}
+                            onPress={() => {
+                                navigation.navigate('WatchVideo', {
+                                    videoid: item.videoid,
+                                    title: item.title,
+                                });
+    
+                            }}>
+                            <View style={{ height: 215, width: 260, backgroundColor: '#234B76', margin: 10, borderRadius: 10, alignSelf: 'center'}}>
+                                <Image
+                                    style={{ height: 140, width: 240, alignSelf: 'center', marginTop: 10, borderTopLeftRadius: 8, borderTopRightRadius: 8 }}
+                                    source={{uri : thumbnailurl}}
                                 />
-                                <Text style={styles.titleView}>Videos from the channel:</Text>
-                                
-
-
+                                <Text style={[styles.videoTitle]} numberOfLines={2}>{item.title}</Text>
+                                <Text style={[styles.normalText, { fontSize: 12, alignSelf: 'flex-end', marginHorizontal: 20 }]} numberOfLines={1}>{item.channelname}</Text>
+    
                             </View>
-                   
+                        </Pressable>
+                        )
+                        }
+                        }
+                    />
+                        : 
+                        <View></View>
+                                }
+                      
+
+
+
+
+                    </View>
+
 
                     : <View style={{ flex: 1 }} >
-                        <View style = {{height: 100, width: "80%",justifyContent: 'center', alignSelf: 'center'}}>
-                        <Text style={[styles.normalText, { textAlign: 'center' }]}>Login to your Google account to see videos from the channels you subscribed to</Text>
-                        
+                        <View style={{ height: 100, width: "80%", justifyContent: 'center', alignSelf: 'center' }}>
+                            <Text style={[styles.normalText, { textAlign: 'center' }]}>Login to your Google account to see videos from the channels you subscribed to</Text>
+
                         </View>
 
                         <Pressable
-                style = {{width: "80%", height: 50, backgroundColor: 'green', alignSelf: 'center', justifyContent: 'center', borderRadius: 10}}
-                onPress={async ()=>{
-                    const user = await GoogleSignin.signIn();
-                    console.log(user);
-                    
-                    axios.get('https://youtube.googleapis.com/youtube/v3/subscriptions?part=snippet&maxResults=25&mine=true&key=AIzaSyDil_bOsqhaiAFE3wNeraXB5wQrq_vsLBc',
-                     {
-                        headers: {
-                          'Authorization': `Bearer ${(await GoogleSignin.getTokens()).accessToken}`,
-                          'Accept' : 'application/json'
-                        }
-                    }
-                    )
-                    .then(res =>{
-                        console.log(res.data)
-                        setChannelData(res.data);
-                        setLoginYoutube(true);
-                    })
-                }}
-                >
-                   <Text style = {[styles.normalText,{textAlign: 'center'}]}>Login to Google</Text>
-                </Pressable> 
-                          
+                            style={{ width: "80%", height: 50, backgroundColor: 'green', alignSelf: 'center', justifyContent: 'center', borderRadius: 10 }}
+                            onPress={async () => {
+                                const user = await GoogleSignin.signIn();
+                                console.log(user);
+
+                                axios.get('https://youtube.googleapis.com/youtube/v3/subscriptions?part=snippet&maxResults=25&mine=true&key=AIzaSyDil_bOsqhaiAFE3wNeraXB5wQrq_vsLBc',
+                                    {
+                                        headers: {
+                                            'Authorization': `Bearer ${(await GoogleSignin.getTokens()).accessToken}`,
+                                            'Accept': 'application/json'
+                                        }
+                                    }
+                                )
+                                    .then(res => {
+                                        console.log(res.data)
+                                        setChannelData(res.data);
+                                        setLoginYoutube(true);
+                                    })
+                            }}
+                        >
+                            <Text style={[styles.normalText, { textAlign: 'center' }]}>Login to Google</Text>
+                        </Pressable>
+
                     </View>
                 }
 
-            </ScrollView>
+            </View>
         )
     }
 
@@ -270,7 +368,7 @@ function Home() {
                     </Pressable>
 
                     <Pressable
-                        onPress={() => { navigation.navigate('MemoRepetition') }}
+                        onPress={() => { navigation.navigate('DailyTest') }}
 
                     >
                         <View style={{ height: 160, width: 160, backgroundColor: '#5BB467', borderRadius: 10 }}>
@@ -281,17 +379,18 @@ function Home() {
                     </Pressable>
                 </View>
                 <Text style={styles.titleView}>Analysis/Statistic:</Text>
-                <View style={{ height: 500, width: 300, backgroundColor: '#5BB467', alignSelf: 'center', marginBottom: 40, borderRadius: 10 }}>
-                    <Text>Statictic</Text>
-                    <Text>Videos watched</Text>
-                    <Text>Hours watched</Text>
-                    <Text></Text>
-                    <Text>Statictic</Text>
-                    <Text>Statictic</Text>
+                <View style={{ height: 200, width: 300, backgroundColor: '#5BB467', alignSelf: 'center', marginBottom: 40, borderRadius: 10, padding: 15 }}>
+                    
+                    <Text style = {styles.normalText}>Videos watched: 13</Text>
+                    <Text style = {styles.normalText}>Hours watched: 2.1</Text>
+                    <Text style = {styles.normalText}></Text>
+                    <Text style = {styles.normalText}>Vocabulary: 1578</Text>
+                    <Text style = {styles.normalText}></Text>
+                    
 
                     <Pressable
                         onPress={() => { navigation.navigate('Statistic') }}
-                        style={{ alignSelf: 'center', marginTop: 300 }}
+                        style={{ alignSelf: 'center',  }}
                     >
                         <View style={{ width: 200, height: 50, backgroundColor: 'green', borderRadius: 10, alignItems: 'center', justifyContent: 'center' }}>
                             <Text style={styles.normalText}>See more:</Text>
@@ -436,12 +535,12 @@ const Recommend = ({ title }) => (
 
 const Channel = ({ title }) => (
     <View style={{ height: 'auto' }}>
-        
-            <Image 
-             style={{ height: 80, width: 80, backgroundColor: 'green', margin: 5, borderRadius: 50, justifyContent: 'center' }}
-            source={{uri: title}}
-            />
-      
+
+        <Image
+            style={{ height: 80, width: 80, backgroundColor: 'green', margin: 5, borderRadius: 50, justifyContent: 'center' }}
+            source={{ uri: title }}
+        />
+
     </View>
 );
 const Video = ({ title }) => (
@@ -492,6 +591,14 @@ const aboutAppData = [
 
 const randomContentData = [
     {
+        "videoid": "m4zdNxjLbZI",
+        "title": "Tôi lồng tiếng Tighnari",
+        "thumbnailurl": "https://img.youtube.com/vi/m4zdNxjLbZI/hqdefault.jpg",
+        "uploaddate": "whocares",
+        "channelid": "thairoi8382",
+        "channelname": "Thái Roi"
+    },
+    {
         "videoid": "R77ZvlHOGwU",
         "title": "Midnight deep Would you rather questions",
         "thumbnailurl": "https://i.ytimg.com/vi/R77ZvlHOGwU/maxresdefault.jpg",
@@ -507,14 +614,7 @@ const randomContentData = [
         "channelid": "thairoi8382",
         "channelname": "Thái Roi"
     },
-    {
-        "videoid": "m4zdNxjLbZI",
-        "title": "Tôi lồng tiếng Tighnari",
-        "thumbnailurl": "https://img.youtube.com/vi/m4zdNxjLbZI/hqdefault.jpg",
-        "uploaddate": "whocares",
-        "channelid": "thairoi8382",
-        "channelname": "Thái Roi"
-    },
+
 
 ]
 

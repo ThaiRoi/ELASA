@@ -10,11 +10,19 @@ import {
     Image,
     FlatList
 } from 'react-native';
-
+import {
+    Menu,
+    MenuOptions,
+    MenuOption,
+    MenuTrigger,
+  } from 'react-native-popup-menu';
+  
+  
 function Social () {
     return (
         <View  style = {{flex: 1, backgroundColor: '#153C43'}}>
             <Text style = {[styles.title, {marginTop: 15}]}>Social</Text>
+   
              <View style={{ height: 50, flexDirection: 'row', justifyContent: 'space-evenly', alignItems:'center'}}>
                     <Image style={{ height: 45, width: 41, margin: 5 }} source={require('../../assets/icons/user.png')} />
                     <Text style= {styles.normalText}>Post with Memo</Text>
@@ -43,7 +51,19 @@ function Social () {
                         <Text style={[styles.title]}>Filthy Frank</Text>
                     </View>
                     <View style={{ flex: 1 }}>
-                        <Text style={[styles.normalText]}>...</Text>
+                    <Menu>
+        <MenuTrigger text='Options' />
+        <MenuOptions>
+          <MenuOption onSelect={() => alert(`Save`)}>
+          <Text style={{color: 'black'}}>Save</Text>
+
+          </MenuOption>
+          <MenuOption onSelect={() => alert(`Report`)} >
+            <Text style={{color: 'red'}}>Report</Text>
+          </MenuOption>
+         
+        </MenuOptions>
+      </Menu>
                     </View>
                 </View>
                 <Image

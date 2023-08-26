@@ -25,7 +25,7 @@ import Toast from 'react-native-toast-message';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
+import { MenuProvider } from 'react-native-popup-menu';
 const Stack = createNativeStackNavigator();
 
 function App() {
@@ -36,6 +36,7 @@ function App() {
 
   return (
     <Provider store={store}>
+       <MenuProvider>
     <NavigationContainer>
       <Stack.Navigator 
       screenOptions={{
@@ -103,6 +104,7 @@ function App() {
       </Stack.Navigator>
     </NavigationContainer>
     <Toast />
+    </MenuProvider>
     </Provider>
   );
 }

@@ -58,7 +58,7 @@ function Memo() {
                 >
                     <View style={{ height: 60, width: '100%', backgroundColor: '#5BB467', borderRadius: 10, justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
                         <FontAwesome name="search" color="#153C43" size={20} />
-                        <Text style={[styles.normalText, { textAlign: 'center', color: '#153C43' }]}>Search</Text>
+                        <Text style={[styles.normalText, { textAlign: 'center', color: '#153C43' }]}>See All</Text>
                     </View>
                 </Pressable>
 
@@ -72,7 +72,7 @@ function Memo() {
                     <View style={{ width: 100, backgroundColor: '#E5D5A4', paddingVertical: 10, alignContent: 'center', justifyContent: 'center', borderRadius: 10 }}>
                         <View style={{ alignSelf: 'center' }}><FontAwesome name="circle" color="red" size={20} /></View>
                         <Text style={[styles.normalText, { color: '#153C43' }]}>New</Text>
-                        <Text style={[styles.normalText, { fontSize: 25, color: '#153C43' }]}>1</Text>
+                        <Text style={[styles.normalText, { fontSize: 25, color: '#153C43' }]}>12</Text>
                     </View>
                 </Pressable>
 
@@ -82,7 +82,7 @@ function Memo() {
                     <View style={{ width: 100, backgroundColor: '#E5D5A4', paddingVertical: 10, alignContent: 'center', justifyContent: 'center', borderRadius: 10 }}>
                         <View style={{ alignSelf: 'center' }}><FontAwesome name="circle" color="yellow" size={20} /></View>
                         <Text style={[styles.normalText, { color: '#153C43' }]}>Learning</Text>
-                        <Text style={[styles.normalText, { fontSize: 25, color: '#153C43' }]}>2</Text>
+                        <Text style={[styles.normalText, { fontSize: 25, color: '#153C43' }]}>30</Text>
                     </View>
                 </Pressable>
 
@@ -92,7 +92,7 @@ function Memo() {
                     <View style={{ width: 100, backgroundColor: '#E5D5A4', paddingVertical: 10, alignContent: 'center', justifyContent: 'center', borderRadius: 10 }}>
                         <View style={{ alignSelf: 'center' }}><FontAwesome name="circle" color="#66ff00" size={20} /></View>
                         <Text style={[styles.normalText, { color: '#153C43' }]}>Mastered</Text>
-                        <Text style={[styles.normalText, { fontSize: 25, color: '#153C43' }]}>3</Text>
+                        <Text style={[styles.normalText, { fontSize: 25, color: '#153C43' }]}>9</Text>
                     </View>
                 </Pressable>
 
