@@ -69,7 +69,7 @@ function History () {
                             });
 
                         }}>
-                        <View style={{ height: 400, width: '90%', backgroundColor: '#234B76', margin: 10, borderRadius: 10, alignSelf: 'center' }}>
+                        <View style={{ height: 320, width: '90%', backgroundColor: '#234B76', margin: 10, borderRadius: 10, alignSelf: 'center' }}>
                             <Image
                                 style={{ height: 160, width: '90%', alignSelf: 'center', marginTop: 10, borderTopLeftRadius: 8, borderTopRightRadius: 8 }}
                                 source={{ uri: thumbnailurl }}
@@ -79,7 +79,7 @@ function History () {
                             <Text style={[styles.normalText,{fontSize: 12, alignSelf: 'center', marginHorizontal: 20}]} >comprehension: {item.comprehensionlevel[item.comprehensionlevel.length-1]}%</Text>
                             <Text style={[styles.normalText,{fontSize: 12, alignSelf: 'center', marginHorizontal: 20}]} >last watched: {item.watchdate[item.watchdate.length-1]}</Text>
                             <Text style={[styles.normalText,{fontSize: 12, alignSelf: 'center', marginHorizontal: 20}]} >Watched {item.timeswatched} times</Text>
-                            <Text style={[styles.normalText,{fontSize: 12, alignSelf: 'center', marginHorizontal: 20}]} >Watche time {item.watchtime}</Text>
+                            <Text style={[styles.normalText,{fontSize: 12, alignSelf: 'center', marginHorizontal: 20}]} >Watch time {item.watchtime}</Text>
 
                         </View>
                     </Pressable>}

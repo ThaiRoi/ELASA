@@ -14,6 +14,7 @@ import { clearUser } from "../user/userSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch } from "react-redux";
 import Slider from '@react-native-community/slider';
+import { Image } from "react-native-animatable";
 
 
 function Account() {
@@ -34,7 +35,7 @@ function Account() {
                 maximumTrackTintColor="#000000"
                 onValueChange={(v)=>{setValue(v)}}
                 /> */}
-            <Pressable
+            {/* <Pressable
                 onPress={() => { }}
                 android_ripple={{ color: '#E5D5A4' }}
                 style={styles.menuBox}
@@ -42,10 +43,13 @@ function Account() {
                 <View>
                     <Text style={[styles.normalText, { shadowColor: 'red', elevation: 1 }]}>Name and shit</Text>
                 </View>
-            </Pressable>
-
-            <Pressable
-                onPress={() => { }}
+            </Pressable> */}
+                    <Text style={[styles.normalText, {padding: 15}]}>Name: Thai</Text>
+                    
+                     <Pressable
+                onPress={() => {
+                    navigation.navigate("Info")
+                }}
                 android_ripple={{ color: '#E5D5A4' }}
                 style={styles.menuBox}
             >
@@ -53,8 +57,18 @@ function Account() {
                     <Text style={styles.normalText}>Change Personal Info</Text>
                 </View>
             </Pressable>
+                    <Text style={[styles.normalText, {padding: 15}]}>Progress: </Text>
 
-            <Pressable
+           <Image
+           style = {{width: 400, height: 150}}
+           source = {require("../../assets/icons/watchTimeStat.png")}
+           />
+           <Image
+           style = {{width:400, height: 150}}
+           source = {require("../../assets/icons/wordStatistic.png")}
+           />
+
+            {/* <Pressable
                 onPress={() => { }}
                 android_ripple={{ color: '#E5D5A4' }}
                 style={styles.menuBox}
@@ -62,7 +76,7 @@ function Account() {
                 <View>
                     <Text style={styles.normalText}>Progress</Text>
                 </View>
-            </Pressable>
+            </Pressable> */}
 
             <Pressable
                 onPress={() => {navigation.navigate('History')}}

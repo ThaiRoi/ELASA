@@ -41,8 +41,11 @@ function VideoRepetition () {
 
 
             <FlatList
-                    data={historyData}
-                    contentContainerStyle={{ flexDirection: 'column-reverse' }}
+                    data={historyData.slice(0,4)}
+                    ListFooterComponent={()=>{
+                        return <Text style = {[styles.title, {padding: 20}]}>That would be the end for today. Good job!</Text>
+
+                    }}
                     renderItem={({ item }) => {
                         let thumbnailurl ='';
                         if(item.thumbnailurl.maxres){
@@ -87,13 +90,12 @@ function VideoRepetition () {
                     }
                     
                 />
+                    
+
+        
         </View>
     )
-    return (
-        <View  style = {{flex: 1, backgroundColor: '#153C43'}}>
-          
-        </View>
-    )
+   
 }
 const styles = StyleSheet.create({
     title: {

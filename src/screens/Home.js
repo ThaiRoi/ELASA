@@ -368,7 +368,7 @@ function Home() {
                     </Pressable>
 
                     <Pressable
-                        onPress={() => { navigation.navigate('DailyTest') }}
+                        onPress={() => { navigation.navigate('MemoRepetition') }}
 
                     >
                         <View style={{ height: 160, width: 160, backgroundColor: '#5BB467', borderRadius: 10 }}>
@@ -385,6 +385,8 @@ function Home() {
                     <Text style = {styles.normalText}>Hours watched: 2.1</Text>
                     <Text style = {styles.normalText}></Text>
                     <Text style = {styles.normalText}>Vocabulary: 1578</Text>
+                    <Text style = {styles.normalText}>Estimated level: B1</Text>
+
                     <Text style = {styles.normalText}></Text>
                     
 

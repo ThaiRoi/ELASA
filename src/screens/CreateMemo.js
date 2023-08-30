@@ -20,6 +20,8 @@ import FormData from "form-data"
 import serverAddress from "../global";
 import { useSelector } from "react-redux";
 import { userReturn } from "../store/store";
+import Toast from 'react-native-toast-message';
+
 function CreateMemo({ route }) {
     const userData = useSelector(userReturn);
 
@@ -76,7 +78,7 @@ function CreateMemo({ route }) {
                 defaultValue= {description}
                 placeholderTextColor={"gray"}
                 onChangeText={(v)=>{
-
+                    setDescription(v);
                 }
                 }
             />
@@ -207,6 +209,13 @@ function CreateMemo({ route }) {
             })
             .then(function (response) {
                     console.log("response :", response.data);
+                    Toast.show({
+                        type: 'success',
+                        text1: "Let's go!!!",
+                        text2: 'Successfully created memo👋',
+                        visibilityTime: 5000
+                      });
+                    navigation.goBack();
            })
            .catch(function (error) {
                     console.log("error from image :", error);
