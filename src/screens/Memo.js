@@ -13,10 +13,16 @@ import {
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from "@react-navigation/native";
 import { Image } from "react-native-animatable";
-
+import {
+    Menu,
+    MenuOptions,
+    MenuOption,
+    MenuTrigger,
+  } from 'react-native-popup-menu';
 
 function Memo() {
     const navigation = useNavigation();
+    const [showExplore, setShowExplore] = useState(true);
     return (
         <ScrollView style={{ flex: 1, backgroundColor: '#153C43' }}>
             <Text style={[styles.title, { margin: 15 }]}>MEMO flashcards</Text>
@@ -102,33 +108,55 @@ function Memo() {
 
             <Text style={[styles.title, { textAlign: 'left', marginHorizontal: 15, marginVertical: 10, fontSize: 23 }]}>Explore:</Text>
 
-            <View style={{ height: 400, width: 320, backgroundColor: '#234B76', margin: 20, marginBottom: 50, borderRadius: 10 }}>
-                <View style={{ margin: 5, flexDirection: 'row', justifyContent: 'center' }}>
-                    <View style={{ flex: 1 }}></View>
-                    <View style={{ flex: 6 }}>
-                        <Text style={[styles.title]}>Filthy Frank</Text>
-                    </View>
-                    <View style={{ flex: 1 }}>
-                        <Text style={[styles.normalText]}>...</Text>
-                    </View>
-                </View>
-                <Image
-                    source={{ uri: 'https://i1.sndcdn.com/artworks-000118768405-0t6s1f-t500x500.jpg' }}
-                    style={{ height: 200, width: 300, alignSelf: 'center' }}
-                />
+{
+    showExplore
+    ?
+    <View style={{ height: 400, width: 320, backgroundColor: '#234B76', margin: 20, marginBottom: 50, borderRadius: 10 }}>
+    <View style={{ margin: 5, flexDirection: 'row', justifyContent: 'center' }}>
+        <View style={{ flex: 1 }}></View>
+        <View style={{ flex: 6 }}>
+            <Text style={[styles.title]}>Filthy Frank</Text>
+        </View>
+        <View style={{ flex: 1 }}>
+        <Menu>
+            <MenuTrigger text='...' />
+                <MenuOptions>
+                <MenuOption onSelect={() => alert(`Save`)}>
+                        <Text style={{color: 'black'}}>Save</Text>
 
-                <Text style={[styles.normalText,]} numberOfLines={6}>
-                    The tiers are shifting. The omniverses are under attack. And only one man has the chromosomes to make things right. Or does he? Filthy Frank begins life as the harmless creator of extinction level radioactive weapons, but is taken far into the deepest recesses of the omniverses to learn how everything came to be and how everything will be. </Text>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 15 }}>
-                    
-                    <Text style={[styles.normalText, {fontSize: 12}]}>Topic: Internet Figure</Text>
-                   <View style={{ flexDirection: 'row' }}>
-                        <Text style={styles.normalText}>author</Text>
-                    </View>
-                </View>
+                 </MenuOption>
+                <MenuOption onSelect={() => setShowExplore(false)} >
+                <Text style={{color: 'red'}}>Hide</Text>
+                </MenuOption>
+
+</MenuOptions>
+</Menu>
+        </View>
+    </View>
+    <Image
+        source={{ uri: 'https://i1.sndcdn.com/artworks-000118768405-0t6s1f-t500x500.jpg' }}
+        style={{ height: 200, width: 300, alignSelf: 'center' }}
+    />
+
+    <Text style={[styles.normalText,]} numberOfLines={6}>
+        The tiers are shifting. The omniverses are under attack. And only one man has the chromosomes to make things right. Or does he? Filthy Frank begins life as the harmless creator of extinction level radioactive weapons, but is taken far into the deepest recesses of the omniverses to learn how everything came to be and how everything will be. </Text>
+    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 15 }}>
+        
+        <Text style={[styles.normalText, {fontSize: 12}]}>Topic: Internet Figure</Text>
+       <View style={{ flexDirection: 'row' }}>
+            <Text style={styles.normalText}>author</Text>
+        </View>
+    </View>
 
 
-            </View>
+</View>
+    : 
+    <View>
+        <Text style = {styles.videoTitle}>No more recommendations for today. Come back tomorrow for new memo recommended just for you</Text>
+
+    </View>
+}
+           
 
         </ScrollView>
     )

@@ -8,28 +8,38 @@ import {
     ScrollView,
     TouchableWithoutFeedback,
     Keyboard,
-    KeyboardAvoidingView
+    KeyboardAvoidingView,
+    Alert
 } from 'react-native';
 import { Image } from "react-native-animatable";
 import ImagePicker from 'react-native-image-crop-picker';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from "@react-navigation/native";
-
+import axios from "axios";
+import FormData from "form-data"
+import serverAddress from "../global";
+import { useSelector } from "react-redux";
+import { userReturn } from "../store/store";
 function CreateMemo({ route }) {
+    const userData = useSelector(userReturn);
 
-    const {sub} = route.params;
+    const {sub, videoid} = route.params;
     
     console.log("this is sub",sub)
     const navigation = useNavigation();
-    const [videoid, setVideoid] = useState('');
+     const [videoId, setVideoId] = useState('');
     const [imagePath, setImagePath] = useState('');
-    const [titleState, setTitleState] = useState('');
+    const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [captionStart, setCaptionStart] = useState('');
         useEffect(()=>{
     if(sub){
     setDescription(sub.text);
     setCaptionStart(sub.start);
+    if(videoid){
+        setVideoId(videoid);
+    }
+    // setVideoid(videoid);
     }
 },[])
     
@@ -53,9 +63,9 @@ function CreateMemo({ route }) {
                 textAlign="center"
                 placeholder= "word to remember..."
                 placeholderTextColor={"gray"}
-                defaultValue= {titleState}
+                defaultValue= {title}
                 onChangeText={(v)=>{
-                    setTitleState(v);
+                    setTitle(v);
                 }}
             />
             <TextInput
@@ -65,6 +75,10 @@ function CreateMemo({ route }) {
                 placeholder="description"
                 defaultValue= {description}
                 placeholderTextColor={"gray"}
+                onChangeText={(v)=>{
+
+                }
+                }
             />
             <Text style={styles.videoTitle}>Image:</Text>
 
@@ -145,14 +159,58 @@ function CreateMemo({ route }) {
 
             </View>
 
-            <Text style= {[styles.normalText, {textAlign: 'left', marginLeft: 20}]}>From video: </Text>      
+            <Text style= {[styles.normalText, {textAlign: 'left', marginLeft: 20}]}>From video: {videoid}</Text>      
             <Text style= {[styles.normalText, {textAlign: 'left', marginLeft: 20}]}>Caption starts at: {captionStart}</Text>          
 
             {/* <Text style={styles.videoTitle}>Note:</Text> */}
           
          <Pressable
          onPress={()=>{
-        
+            if(title==''){
+                Alert.alert('Title is empty', 'Please enter a title, aka Word to Remember')
+                return;
+            }
+            console.log({
+                videoid: videoId,
+                title: title,
+                userid: userData.userId,
+                username: userData.account,
+                description: description,
+                captionstart: captionStart,
+            })
+            let data = {
+                videoid: videoId,
+                title: title,
+                userid: userData.userId,
+                username: userData.account,
+                description: description,
+                captionstart: captionStart,
+            }
+            const formData = new FormData();
+            formData.append('data', JSON.stringify(data));
+            if(imagePath){
+                formData.append('myFile', {
+                     uri: imagePath,
+                    type: 'image/jpeg', 
+                    name: "imagename.jpg",
+                  });
+            }
+                
+            axios({
+                url    : `${serverAddress}/uploadfile`,
+                method : 'POST',
+                data   : formData,
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'multipart/form-data',
+                }
+            })
+            .then(function (response) {
+                    console.log("response :", response.data);
+           })
+           .catch(function (error) {
+                    console.log("error from image :", error);
+           })
          }}
          style = {{height: 50, width: "90%", justifyContent: 'center', alignItems: 'center', alignSelf: 'center', borderRadius: 10,margin: 20, marginTop: 40, backgroundColor: "#5BB467"}}
          android_ripple={{color: 'white'}}

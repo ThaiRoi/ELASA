@@ -288,9 +288,12 @@ function WatchVideo({ route }) {
   }, [loadingSubtitle]);
 
   useEffect(() => {
-    console.log("selectedIndex", selectedIndex);
+    if(!interval){
+      runSub();
+    }
+    // console.log("selectedIndex", selectedIndex);
   }
-    , [selectedIndex]);
+    );
 
     function testConsoleLog(){
       console.log("this is function test console log let's goooooooooooooooooooo");
@@ -515,7 +518,7 @@ function WatchVideo({ route }) {
                     </View>
                     <Pressable
                     onPress={()=>{
-
+                      clearInterval(interval);
                       navigation.navigate("CreateMemo", {
                         sub : item,
                         videoid : videoid

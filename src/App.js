@@ -18,6 +18,7 @@ import SearchMemo from './screens/SearchMemo';
 import SeeMemo from './screens/SeeMemo';
 import History from './screens/History';
 import VideoSearch from './screens/VideoSearch';
+import ViewPost from './screens/ViewPost';
 
 import LottieSplashScreen from 'react-native-lottie-splash-screen';
 import Toast from 'react-native-toast-message';
@@ -99,6 +100,10 @@ function App() {
         <Stack.Screen
         name = 'VideoSearch'
         component={VideoSearch}
+        />
+        <Stack.Screen
+        name = 'ViewPost'
+        component={ViewPost}
         />
   
       </Stack.Navigator>
